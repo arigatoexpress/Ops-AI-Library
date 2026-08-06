@@ -1,58 +1,47 @@
 # SharePoint Content Model
 
-SharePoint is how managers will use this library day to day.  
-GitHub remains the engineering/content source of truth until automation exists.
+SharePoint (or a Teams tab pointing at SharePoint) is how managers use this library day to day.  
+GitHub remains the source of truth for builders.
 
-## Paste-ready assets
+## Start here (blank site / non-technical team)
 
 | Asset | Use |
 | --- | --- |
-| [home-page-paste.md](home-page-paste.md) | Home page web part copy |
-| [prompt-card-template.md](prompt-card-template.md) | Duplicate per published prompt |
-| [../docs/manager-wallet-card.md](../docs/manager-wallet-card.md) | Printable / PDF attachment |
-| [../demos/](../demos/README.md) | Training page with synthetic demos |
+| **[ops-ai-library-page-template.html](ops-ai-library-page-template.html)** | **Best option:** upload + Teams Website tab. Ready-made manager page with Copy buttons. |
+| [sharepoint-native-page-recipe.md](sharepoint-native-page-recipe.md) | Rebuild as a native SharePoint page / save as template |
+| [home-page-paste.md](home-page-paste.md) | Section copy if building web parts by hand |
+| [prompt-card-template.md](prompt-card-template.md) | Expand beyond the first 6 prompts later |
+| [../docs/manager-wallet-card.md](../docs/manager-wallet-card.md) | Printable rules |
+| [../docs/print-pack-first-week.md](../docs/print-pack-first-week.md) | Six starter prompts as paper/PDF |
 
-## Page map
+## 10-minute setup
 
-Full IA: [playbooks/sharepoint-power-automate.md](../playbooks/sharepoint-power-automate.md)
+1. Download `ops-ai-library-page-template.html` from this folder (or repo ZIP).  
+2. SharePoint → document library → **Upload**.  
+3. Teams channel → **+** tab → **Website** → paste the file link.  
+4. Name the tab **Ops AI Library**.  
+5. Post the welcome message in the channel.
+
+## Page map (if you grow beyond one page)
 
 ```text
-Home → Start here + Safe use
-Prompt Library → cards from template + CATALOG IDs
-Agent Gallery → 3 agents first
-Workflows → Draft/Pilot/Approved only
-Data Cards → classification one-pagers
-Training → demos + wallet card
-Feedback → form
+Home / template page   ← managers live here
+├── Start here
+├── Prompt Library     ← expand after week 1
+├── Agent Gallery
+├── Safe use
+├── Training
+└── Feedback
 ```
-
-## Content block: Prompt card
-
-See [prompt-card-template.md](prompt-card-template.md). Minimum metadata:
-
-- Category · Audience · Data class · Status · Owner · Last reviewed · Related agent  
-
-## Content block: Agent card
-
-| Field | Example |
-| --- | --- |
-| Agent name | Shift Brief Coach |
-| One-liner | Turns scrubbed notes into shift briefs |
-| Open agent | Link (Gemini Enterprise) |
-| Soul version | v1.0 date |
-| Example inputs | Link to `demos/01-shift-brief.md` |
-| Feedback | Form link |
 
 ## Publishing checklist
 
-- [ ] Text is non-technical  
+- [ ] Non-technical language  
 - [ ] No real sensitive examples  
-- [ ] Status tag set (Draft / Pilot / Approved)  
-- [ ] Owner + review date set  
-- [ ] Safe use linked  
-- [ ] Catalog ID shown (P01…)  
+- [ ] Safe use visible without hunting  
+- [ ] First-week prompts available without GitHub  
+- [ ] Owner + last reviewed date  
 
-## When access is missing
+## When Power Automate access arrives
 
-Continue improving content in GitHub.  
-Do not block prompt quality work on SharePoint provisioning.
+Use [../playbooks/sharepoint-power-automate.md](../playbooks/sharepoint-power-automate.md) — do not block the simple page on automation.
