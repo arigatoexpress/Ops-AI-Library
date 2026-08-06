@@ -3,6 +3,8 @@
 **Status:** Design-ready. **We do not have full access yet.**  
 **Goal:** Day one after access is configuration — not brainstorming.
 
+**Related:** [Power Automate flow specs A/B/C](power-automate-flow-specs.md) · [SharePoint paste pack](../sharepoint/README.md)
+
 ---
 
 ## Why SharePoint is the front door
@@ -12,25 +14,28 @@ They will open a SharePoint page, pick a prompt or agent card, and work.
 
 | Surface | Role |
 | --- | --- |
-| **This GitHub repo** | Source of truth for prompts, souls, playbooks |
+| **This GitHub repo** | Source of truth for prompts, souls, playbooks, demos |
 | **SharePoint** | Manager-facing library, search, ownership, feedback |
-| **Power Automate** | Future workflows that *orchestrate* drafts + approvals (not unsupervised AI) |
-| **Gemini Enterprise** | Where agents actually reason (web UI today) |
+| **Power Automate** | Orchestrates drafts + approvals (not unsupervised AI) |
+| **Gemini Enterprise** | Where agents reason (web UI today) |
 | **Microsoft 365 / Copilot** (if licensed) | Secondary drafting surface using the same prompts |
 
 ---
 
 ## Phase 0 — Before access (do now)
 
-- [x] Prompt library written in GitHub  
+- [x] Prompt library + catalog in GitHub  
 - [x] Soul.md files written  
 - [x] Safe use rules written  
+- [x] SharePoint home-page paste + card template  
+- [x] Power Automate flow specs A/B/C  
+- [x] Synthetic demos for training  
 - [ ] Nominate **Site Owner** + **Content Owner** + **Tech Owner**  
-- [ ] Confirm tenant: which M365 group / security groups can view  
-- [ ] Confirm whether Copilot Studio / Power Automate premium features will be available  
-- [ ] Align with InfoSec / AI governance on data classes allowed in SharePoint vs Gemini  
+- [ ] Confirm tenant groups who can view  
+- [ ] Confirm Power Automate / Copilot Studio availability + DLP  
+- [ ] Align InfoSec / AI governance on data classes  
 
-**Deliverable of Phase 0:** this playbook + content ready to paste.
+**Deliverable of Phase 0:** content ready to paste (this repo).
 
 ---
 
@@ -38,161 +43,84 @@ They will open a SharePoint page, pick a prompt or agent card, and work.
 
 ### Recommended site name
 
-**Ops AI Library** (or region-specific: `Ops AI Library — [Region]`)
+**Ops AI Library** (or `Ops AI Library — [Region]`)
 
 ### Information architecture
 
 ```text
-Home
-├── Start here (3 steps + safe use summary)
-├── Prompt Library
-│   ├── Daily operations
-│   ├── Safety
-│   ├── Meetings
-│   ├── Data & reporting
-│   ├── Peak & surge
-│   ├── Linehaul
-│   ├── Customer & contractor
-│   └── Governance
+Home                    ← paste sharepoint/home-page-paste.md
+├── Start here
+├── Prompt Library      ← cards from prompt-card-template.md + CATALOG IDs
 ├── Agent Gallery
-│   ├── Gemini agent cards (link + soul attachment)
-│   └── How to request a new agent
-├── Workflows (Power Automate)
-│   ├── Draft / Pilot / Approved status tags
-│   └── Runbooks per flow
+├── Workflows           ← Draft / Pilot / Approved only
 ├── Data Cards
-│   └── What data, which tool, who may use
-├── Training
-│   └── 15-minute manager onboarding
+├── Training            ← demos/ + wallet card
 └── Feedback
-    └── Form: helped / failed / idea
 ```
 
-### Libraries (document libraries)
+### Libraries
 
 | Library | Contents | Versioning |
 | --- | --- | --- |
-| `Prompts` | One page or file per prompt (export from repo) | On |
-| `Souls` | soul.md copies for agents | On |
+| `Prompts` | One card per prompt | On |
+| `Souls` | soul.md copies | On |
 | `Data Cards` | Classification one-pagers | On |
-| `Playbooks` | This file + GCP + Gemini day-one | On |
-| `Evidence` | Screenshots of successful tests (no sensitive data) | On |
+| `Playbooks` | Access playbooks | On |
+| `Evidence` | Screenshots of tests (no sensitive data) | On |
 
-### Content types / metadata (minimum)
+### Metadata (minimum)
 
-- Category  
-- Audience (role)  
-- Data class allowed  
-- Status: Draft / Pilot / Approved  
-- Owner  
-- Last reviewed date  
-- Gemini agent name (if linked)
-
-### Home page modules
-
-1. **Hero:** “AI drafts. You decide.” + link to Safe Use.  
-2. **Do this today:** 3 featured prompts.  
-3. **Agents:** cards for Shift Brief Coach, Safety Huddle, Metrics Explainer.  
-4. **What’s new:** monthly update list.  
-5. **Report a problem** button.
+Category · Audience · Data class · Status · Owner · Last reviewed · Gemini agent · Catalog ID (P01…)
 
 ---
 
 ## Phase 2 — Sync model (GitHub → SharePoint)
 
-Until automation exists:
-
 | Cadence | Action |
 | --- | --- |
-| Weekly | Content owner copies changed prompts/souls from GitHub to SharePoint |
-| On release | Bump “Last reviewed” metadata |
-| Monthly | Archive outdated prompts (don’t delete history) |
+| Weekly | Content owner publishes changed prompts/souls |
+| On release | Bump last-reviewed metadata |
+| Monthly | Archive unused prompts (keep history) |
 
-**Later automation (when Power Automate access exists):**
-
-- Flow: “When file committed / when manual button pressed → create SharePoint page from markdown”  
-- Or: store canonical files in SharePoint and mirror to GitHub for engineering — pick **one** source of truth (recommend GitHub for version control, SharePoint as published view)
+Later: automate publish with Flow A pattern — still keep **one** source of truth (recommend GitHub for version control, SharePoint as published view).
 
 ---
 
-## Phase 3 — Power Automate agentic workflows (design only until access)
+## Phase 3 — Power Automate (design → build)
+
+Full step tables: **[power-automate-flow-specs.md](power-automate-flow-specs.md)**
+
+| Flow | Name | Risk |
+| --- | --- | --- |
+| A | Prompt of the week publisher | Low |
+| B | Idea intake → triage packet | Medium |
+| C | Shift brief assist (manager-only draft) | Medium |
 
 ### Design principles
 
-1. **Human approval before anything leaves the system** (email, Teams post, ticket).  
-2. **No confidential data** in flows until classification + tool approval.  
-3. **Gemini / Copilot for drafting; Power Automate for routing and logging.**  
-4. **Every flow has an owner, a rollback, and a kill switch.**  
-5. Start with **notification + approval**, not auto-send.
-
-### First three workflows to build when access lands
-
-#### Workflow A — “Prompt of the week” publisher
-
-| Item | Spec |
-| --- | --- |
-| Trigger | Manual or weekly schedule |
-| Steps | Pick approved prompt from SharePoint library → post to Teams channel → log views |
-| AI? | Optional: generate a 1-sentence “why try this” from public description only |
-| Human gate | Content owner approves post body |
-| Success metric | Clicks / feedback form responses |
-
-#### Workflow B — “Idea intake → triage packet”
-
-| Item | Spec |
-| --- | --- |
-| Trigger | SharePoint form or Teams message to a channel |
-| Steps | Create list item → call Gemini/Copilot with **Governance Gatekeeper** soul on scrubbed fields → write triage packet to SharePoint → assign reviewer |
-| AI? | Yes — draft only |
-| Human gate | Governance reviewer accepts/rejects before any broader share |
-| Success metric | Time from idea to first review decision |
-
-#### Workflow C — “Shift brief assist (manager-initiated)”
-
-| Item | Spec |
-| --- | --- |
-| Trigger | Manager clicks “Draft brief” button / Adaptive Card |
-| Steps | Manager pastes **scrubbed** notes → Gemini with Shift Brief Coach soul → return draft to manager only → manager copies to email/Teams manually |
-| AI? | Yes — draft only |
-| Human gate | Manager always edits; **no auto-post** in v1 |
-| Success metric | Self-reported time saved; quality feedback |
+1. Human approval before anything leaves the system  
+2. No confidential data until classification + tool approval  
+3. Gemini/Copilot for drafting; Power Automate for routing/logging  
+4. Owner, rollback, kill switch on every flow  
+5. Start with notification + approval — never auto-send to customers  
 
 ### Explicit non-goals for v1
 
 - Auto-emailing customers  
-- Auto-creating production tickets with AI-written content unreviewed  
+- Unreviewed production tickets  
 - Reading production mailboxes for package data  
 - Writing to operational systems of record  
 
 ---
 
-## Phase 4 — Microsoft-licensed agent stack (when available)
+## Access checklist (hand to IT)
 
-Possible components (availability varies by tenant):
-
-| Component | Use |
-| --- | --- |
-| SharePoint | Content + permissions |
-| Power Automate | Orchestration + approvals |
-| Copilot Studio | Packaged agents with enterprise controls (if licensed) |
-| Teams | Delivery surface for managers |
-| Dataverse / Lists | Intake logs, feedback, audit |
-| Purview labels | Classification on libraries |
-
-**Decision rule:** Prefer the tool IT already supports. Do not invent a parallel shadow stack.
-
----
-
-## Access checklist (hand to IT / platform)
-
-When requesting access, ask for:
-
-1. SharePoint site creation rights (or a provisioned site).  
-2. Owners group + members group for Ops AI Library.  
-3. Power Automate environment (default + DLP policy clarity).  
-4. Permission to call Gemini Enterprise / Copilot from flows **if** that integration is approved.  
-5. Logging / retention expectations.  
-6. Whether external sharing is blocked (should be: **internal only**).
+1. SharePoint site (or creation rights)  
+2. Owners + members groups  
+3. Power Automate environment + DLP clarity  
+4. Permission to call Gemini/Copilot from flows **if** approved  
+5. Logging / retention expectations  
+6. External sharing blocked (internal only)  
 
 ---
 
@@ -200,29 +128,18 @@ When requesting access, ask for:
 
 | Week | Outcome |
 | --- | --- |
-| 1 | Site live, IA complete, Safe Use page published |
-| 2 | All core prompts published with metadata |
-| 3 | Three Gemini agent cards + souls linked |
-| 4 | Workflow A live (publisher); B & C in pilot design review |
-
----
-
-## Risks and mitigations
-
-| Risk | Mitigation |
-| --- | --- |
-| Managers paste sensitive data into forms | Big red Safe Use banner; form field hints; DLP where available |
-| Drift between GitHub and SharePoint | Single content owner; weekly sync; last-reviewed dates |
-| Shadow IT automations | Only Approved-tagged flows; kill switch; environment DLP |
-| Overpromising “agentic” | Agency ladder: draft → recommend → prepare → act-with-approval |
+| 1 | Site live; Safe Use + home page published |
+| 2 | Core prompts published with metadata + catalog IDs |
+| 3 | Three Gemini agent cards linked |
+| 4 | Flow A live; B & C in pilot design review |
 
 ---
 
 ## Definition of done (SharePoint launch)
 
-- [ ] Non-technical manager can find a prompt in under 60 seconds  
-- [ ] Safe use rules linked from every major page  
-- [ ] At least 3 agents documented with soul + example  
+- [ ] Manager finds a prompt in under 60 seconds  
+- [ ] Safe use linked from every major page  
+- [ ] ≥3 agents documented with soul + demo link  
 - [ ] Feedback form works  
-- [ ] Owners named on the home page  
-- [ ] No production auto-send flows enabled
+- [ ] Owners named on home page  
+- [ ] No production auto-send flows enabled  

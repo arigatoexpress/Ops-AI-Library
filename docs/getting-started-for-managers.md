@@ -7,39 +7,47 @@
 AI drafts. **You** decide.  
 Never paste tracking numbers, customer names, employee records, or credentials into an unapproved tool.
 
+Print: [manager-wallet-card.md](manager-wallet-card.md)  
 Full rules: [../governance/safe-use-rules.md](../governance/safe-use-rules.md)
 
-## 2. Pick one job you already do
+## 2. Try a safe demo first (no real notes needed)
+
+Open [../demos/01-shift-brief.md](../demos/01-shift-brief.md), paste into Gemini, see the quality bar.
+
+## 3. Pick one job you already do
 
 | Job | Open |
 | --- | --- |
-| Start of shift | [Daily Manager Brief](../prompts/daily-operations.md) |
-| Handoff | [Shift Handoff](../prompts/daily-operations.md) |
-| Safety huddle | [Pre-Shift Safety Huddle](../prompts/safety-and-compliance.md) |
-| Meeting follow-up | [Notes to action items](../prompts/meeting-and-communication.md) |
-| “What does this number mean?” | [Metrics interpretation](../prompts/data-and-reporting.md) |
+| Start of shift | [Daily Manager Brief](../prompts/daily-operations.md) (P01) |
+| Handoff | [Shift Handoff](../prompts/daily-operations.md) (P02) |
+| Safety huddle | [Pre-Shift Safety Huddle](../prompts/safety-and-compliance.md) (P08) |
+| Meeting follow-up | [Notes to action items](../prompts/meeting-and-communication.md) (P15) |
+| “What does this number mean?” | [Metrics interpretation](../prompts/data-and-reporting.md) (P20) |
+| “Is this AI idea safe?” | [Is this safe?](../prompts/governance-safe-use.md) (P44) |
 
-## 3. Scrub your notes
+Full list: [../prompts/CATALOG.md](../prompts/CATALOG.md)
 
-Replace real details with placeholders:
+## 4. Scrub your notes
 
 ```text
 [Station A]  [Shift 2]  [Volume range]  [Issue category]
 ```
 
-## 4. Paste into Gemini Enterprise
+See [examples-before-after.md](examples-before-after.md) for risky vs safe pastes.
+
+## 5. Paste into Gemini Enterprise
 
 If your team set up agents, use **Shift Brief Coach** / **Safety Huddle Coach** / **Metrics Explainer**.  
 Otherwise paste the prompt into a normal Gemini chat.
 
-## 5. Edit before you share
+## 6. Edit before you share
 
 - Fix facts  
 - Remove guesses  
 - Add real owners from your org  
 - Send only what you would sign your name to  
 
-## 6. Tell us what worked
+## 7. Tell us what worked
 
 Good feedback: “Saved me 10 minutes on handoff” or “It invented a delay cause.”  
-That is how the library improves.
+Use the GitHub **Feedback** issue template or your team’s form.

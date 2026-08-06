@@ -1,7 +1,6 @@
 # Meeting One-Pager — Ops AI Library
 
 **Audience:** Leadership / peers reviewing our AI efficiency direction  
-**Date context:** August 2026  
 **Repo:** [arigatoexpress/Ops-AI-Library](https://github.com/arigatoexpress/Ops-AI-Library)
 
 ---
@@ -12,61 +11,50 @@ Help Operations Managers **use AI tomorrow morning** with copy-paste prompts and
 
 ---
 
+## Live demo (6 minutes)
+
+Facilitator pack: **[demos/README.md](../demos/README.md)**
+
+| Min | Do |
+| --- | --- |
+| 0–1 | Show [wallet card](manager-wallet-card.md) rule: AI drafts / you decide |
+| 1–3 | Paste [demo 01 shift brief](../demos/01-shift-brief.md) into Gemini |
+| 3–4 | Paste [demo 02 safety huddle](../demos/02-safety-huddle.md) |
+| 4–5 | Optional: [demo 04 is this safe?](../demos/04-is-this-safe.md) (auto-email idea = Red) |
+| 5–6 | Ask for decisions below |
+
+---
+
 ## What changed from the old hub
 
 | Before (AI-Efficiency) | Now (Ops-AI-Library) |
 | --- | --- |
 | Prompts + apps + CLIs + research + deploy demos | **Prompts + souls + playbooks** first |
-| Managers had to navigate technical projects | Managers start at a **prompt table** |
-| SharePoint / Power Automate assumed later | Full **playbook written before access** |
+| Managers navigated technical projects | Managers start at a **prompt table** + demos |
+| SharePoint / Power Automate assumed later | **Playbook + flow specs** written before access |
 | Gemini “someday” | Gemini Enterprise **in use now** (web UI) |
-| Example projects in the headline | Example projects **demoted to appendix** |
-
-We pruned tech debt and old assumptions so the mandate is obvious in a 30-second skim.
+| Example projects in the headline | Example projects **appendix only** |
 
 ---
 
 ## What we have today
 
-1. **Prompt library** — daily ops, safety, meetings, data, peak, linehaul, improvement, governance.  
-2. **Soul.md files** — agent personas with hard guardrails for Gemini Enterprise.  
-3. **Gemini day-one playbook** — how we name, test, and roll out agents in the web UI.  
-4. **SharePoint + Power Automate playbook** — site map, libraries, first three agentic workflows (design only until access).  
-5. **GCP sandbox plan** — what the data engineer path builds first (synthetic / public only).  
-6. **Safe use rules** in plain English.
+1. **45 prompts** + [catalog](../prompts/CATALOG.md)  
+2. **6 souls** for Gemini Enterprise agents  
+3. **Synthetic demos** ready to paste in the room  
+4. **SharePoint home-page paste** + card template  
+5. **Power Automate flow specs** A/B/C (draft + approval only)  
+6. **GCP sandbox plan** + **pilot scorecard**  
+7. **Safe use rules** in plain English  
 
 ---
 
 ## What we are *not* claiming
 
-- Not official FedEx policy.  
-- Not production automation.  
-- Not approved for confidential package / customer / employee data.  
-- Not “we already run Power Automate agentic workflows” — we are **ready**, not live.
-
----
-
-## How value shows up for a manager
-
-| Situation | AI assist | Human still owns |
-| --- | --- | --- |
-| Start of shift | Draft priorities + risks from scrubbed notes | Staffing and go/no-go calls |
-| Handoff | Structure open items + first checks | What the next shift actually does |
-| Safety huddle | 2-minute script | Safety culture and escalation |
-| Metrics review | Plain-English “what looks off” | Decisions from source systems |
-| Improvement idea | Pilot framing + success metrics | Approvals and change control |
-
----
-
-## Next 90 days (summary)
-
-| Window | Focus |
-| --- | --- |
-| **Days 1–30** | Prompt adoption in Gemini; 3 agents live in web UI; feedback loop |
-| **Days 31–60** | SharePoint library populated from this repo; first Power Automate pilot designs reviewed |
-| **Days 61–90** | GCP sandbox experiments (synthetic); one measured pilot story; expand agents |
-
-Full plan: [playbooks/90-day-roadmap.md](../playbooks/90-day-roadmap.md)
+- Not official FedEx policy  
+- Not production automation  
+- Not approved for confidential package / customer / employee data  
+- Not “Power Automate agentic workflows are live” — we are **ready**, not live  
 
 ---
 
@@ -74,24 +62,18 @@ Full plan: [playbooks/90-day-roadmap.md](../playbooks/90-day-roadmap.md)
 
 1. **Endorse** the pruned mandate (prompts / literacy / agent prep first).  
 2. **Sponsor** SharePoint site owners + Power Automate access when available.  
-3. **Confirm** Gemini Enterprise is the primary manager-facing AI surface for this team.  
-4. **Keep** GCP sandbox work gated to public/synthetic until data classification is approved.  
-5. **Treat** legacy apps as appendix demos, not the product.
+3. **Confirm** Gemini Enterprise as the primary manager-facing AI surface.  
+4. **Keep** GCP sandbox work on public/synthetic until data classification is approved.  
+5. **Treat** legacy apps as appendix demos, not the product.  
 
 ---
 
-## One demo for the meeting (2 minutes)
+## Next 90 days (headline)
 
-1. Open `prompts/daily-operations.md` → **Daily Manager Brief**.  
-2. Paste into Gemini with synthetic notes (no real data).  
-3. Show: priorities, risks, “Needs verification,” safety line.  
-4. Say: “This is the product. Everything else supports shipping more of these.”
+| Window | Focus |
+| --- | --- |
+| Days 1–30 | Prompt adoption; 3 agents live; pilot scorecard running |
+| Days 31–60 | SharePoint library from this repo; Flow A design review |
+| Days 61–90 | GCP synthetic experiments; one measured pilot story |
 
----
-
-## Links
-
-- Repo home: [README](../README.md)  
-- Safe use: [governance/safe-use-rules.md](../governance/safe-use-rules.md)  
-- SharePoint plan: [playbooks/sharepoint-power-automate.md](../playbooks/sharepoint-power-automate.md)  
-- GCP plan: [playbooks/gcp-sandbox.md](../playbooks/gcp-sandbox.md)
+Full: [playbooks/90-day-roadmap.md](../playbooks/90-day-roadmap.md)

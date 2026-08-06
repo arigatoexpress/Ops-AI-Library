@@ -9,9 +9,13 @@ Every prompt:
 - Ends with a **human review** mindset  
 - Works in **Gemini Enterprise** and other approved tools  
 
+**Full index:** [CATALOG.md](CATALOG.md) (45 prompts)  
+**See it work:** [../demos/](../demos/README.md)  
+**Good vs bad:** [../docs/examples-before-after.md](../docs/examples-before-after.md)
+
 ## How to use (5 steps)
 
-1. Pick a category below.  
+1. Pick a category below (or find an ID in the catalog).  
 2. Copy one prompt.  
 3. Replace `[brackets]` with **non-sensitive** notes.  
 4. Paste into Gemini (or your approved tool).  
@@ -22,15 +26,26 @@ Every prompt:
 | File | Use it for |
 | --- | --- |
 | [00-how-to-write-prompts.md](00-how-to-write-prompts.md) | Learn the simple formula |
-| [daily-operations.md](daily-operations.md) | Briefs, handoffs, escalations, closeouts |
+| [daily-operations.md](daily-operations.md) | Shift briefs, handoffs, escalations, after-action reviews |
 | [safety-and-compliance.md](safety-and-compliance.md) | Huddles, near-miss structure, seasonal alerts |
-| [meeting-and-communication.md](meeting-and-communication.md) | Agendas, actions, emails, exec updates |
+| [meeting-and-communication.md](meeting-and-communication.md) | Agendas, action items, emails, exec updates |
 | [data-and-reporting.md](data-and-reporting.md) | Metrics in plain English |
 | [process-improvement.md](process-improvement.md) | Root cause, standard work, pilots |
 | [peak-season-and-surge.md](peak-season-and-surge.md) | Peak planning and surge response |
 | [linehaul-and-routing.md](linehaul-and-routing.md) | Delay and coordination drafts |
 | [customer-and-contractor.md](customer-and-contractor.md) | Scrubbed external-facing drafts |
 | [governance-safe-use.md](governance-safe-use.md) | Is this idea safe? Review prep |
+
+## First-week set (new managers)
+
+| ID | Prompt |
+| --- | --- |
+| P01 | Daily Manager Brief |
+| P02 | Shift Handoff |
+| P08 | Pre-Shift Safety Huddle |
+| P15 | Notes → Action Items |
+| P20 | Metrics Interpretation |
+| P44 | Is This Safe To Try? |
 
 ## Safe Prompt Rule
 

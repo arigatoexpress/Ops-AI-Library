@@ -4,11 +4,11 @@ Thank you for helping Operations Managers use AI safely.
 
 ## What to contribute
 
-- New or improved **prompts**  
+- New or improved **prompts** (update [prompts/CATALOG.md](prompts/CATALOG.md))  
 - New or improved **souls**  
 - Playbook updates (SharePoint, Power Automate, GCP, Gemini)  
+- Synthetic **demos** and before/after examples  
 - Plain-English governance clarity  
-- Synthetic examples and test packs  
 
 ## What not to contribute
 
@@ -22,7 +22,8 @@ Thank you for helping Operations Managers use AI safely.
 - Write for a busy **non-technical manager** first.  
 - Short sections, copyable examples, checklists.  
 - Every AI output framed as a **draft for human review**.  
-- Prefer one focused PR per change.
+- Prefer one focused PR per change.  
+- See [AGENTS.md](AGENTS.md).
 
 ## Prompt checklist
 
@@ -30,14 +31,22 @@ Thank you for helping Operations Managers use AI safely.
 - [ ] “Do not invent facts” (or equivalent)  
 - [ ] Output format specified  
 - [ ] Needs verification / human review language  
+- [ ] Listed in `prompts/CATALOG.md` with ID  
 - [ ] Linked from `prompts/README.md` if new category  
 
 ## Soul checklist
 
 - [ ] Identity, mission, always/never, output shape  
 - [ ] Refusal line for sensitive data  
-- [ ] Matches an agent in `gemini-agents/README.md` or proposes one  
+- [ ] Linked from `souls/README.md` and `gemini-agents/README.md`  
+
+## Demo checklist
+
+- [ ] Synthetic data only  
+- [ ] Paste block works stand-alone  
+- [ ] “What you should see” quality bar listed  
 
 ## Review
 
-Use [governance/project-review-checklist.md](governance/project-review-checklist.md) for anything that will be team-recommended.
+Use [governance/project-review-checklist.md](governance/project-review-checklist.md) for anything team-recommended.  
+File ideas via GitHub issue templates (prompt / feedback / use case).
