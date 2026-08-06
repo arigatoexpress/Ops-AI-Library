@@ -9,14 +9,21 @@ Copy-paste prompts and Gemini agent “souls” so FedEx Operations Managers can
 
 ## Use it in 60 seconds
 
-1. **Scrub** your notes → `[Station A]`, `[Shift 2]`, `[Issue category]`  
-2. Open **[demos/01-shift-brief.md](demos/01-shift-brief.md)** (synthetic — safe to paste)  
-3. Paste into **Gemini Enterprise** (or another approved tool)  
-4. **Edit** the draft → then share  
+### Option A — Prompt Explorer (best for managers)
+
+1. Open **[prompts/explorer.html](prompts/explorer.html)** in any browser (works offline after download)  
+2. Pick **P01 Daily Manager Brief** (or search)  
+3. Edit the brackets → **Copy prompt** → paste into **Gemini Enterprise**  
+4. **Edit** the AI draft → then share  
+
+### Option B — Meeting demo pack
+
+Open **[demos/01-shift-brief.md](demos/01-shift-brief.md)** (synthetic — safe to paste) and run it live.
 
 Print the rules: **[Manager wallet card](docs/manager-wallet-card.md)**  
-First week as a manager: **[Getting started](docs/getting-started-for-managers.md)**  
-In a leadership meeting: **[Meeting one-pager](docs/meeting-one-pager.md)** + **[Live demos](demos/README.md)**
+New manager path: **[Getting started](docs/getting-started-for-managers.md)** · **[FAQ](docs/faq.md)**  
+Leadership meeting: **[Meeting one-pager](docs/meeting-one-pager.md)** · **[15-min workshop](docs/workshop-15-min.md)**  
+Announce to the team: **[Teams / email paste](docs/teams-announcement.md)**
 
 ---
 
@@ -24,12 +31,15 @@ In a leadership meeting: **[Meeting one-pager](docs/meeting-one-pager.md)** + **
 
 | If you want… | Go here |
 | --- | --- |
-| A prompt for a real shift task | [prompts/](prompts/README.md) · [full catalog](prompts/CATALOG.md) |
+| Browse & copy prompts (offline UI) | **[prompts/explorer.html](prompts/explorer.html)** |
+| Prompt list by ID | [prompts/CATALOG.md](prompts/CATALOG.md) |
 | See good vs bad examples | [docs/examples-before-after.md](docs/examples-before-after.md) |
+| Sample “good” brief output | [demos/sample-good-output-01.md](demos/sample-good-output-01.md) |
 | Safe use rules | [governance/safe-use-rules.md](governance/safe-use-rules.md) |
+| What data may go where | [governance/data-cards.md](governance/data-cards.md) |
 | Build a Gemini agent | [gemini-agents/](gemini-agents/README.md) + [souls/](souls/README.md) |
-| SharePoint page copy (when site exists) | [sharepoint/home-page-paste.md](sharepoint/home-page-paste.md) |
-| Power Automate designs (no access yet) | [playbooks/sharepoint-power-automate.md](playbooks/sharepoint-power-automate.md) · [flow specs](playbooks/power-automate-flow-specs.md) |
+| SharePoint page copy | [sharepoint/home-page-paste.md](sharepoint/home-page-paste.md) |
+| Power Automate designs | [playbooks/sharepoint-power-automate.md](playbooks/sharepoint-power-automate.md) · [flow specs](playbooks/power-automate-flow-specs.md) |
 | GCP sandbox plan | [playbooks/gcp-sandbox.md](playbooks/gcp-sandbox.md) |
 | Measure a pilot | [docs/pilot-scorecard.md](docs/pilot-scorecard.md) |
 | Plain-English terms | [docs/glossary.md](docs/glossary.md) |
@@ -41,10 +51,10 @@ In a leadership meeting: **[Meeting one-pager](docs/meeting-one-pager.md)** + **
 | We build | We do not build here |
 | --- | --- |
 | **Prompt libraries** managers can copy | Another install/deploy dashboard product |
-| **Soul.md** guardrails for Gemini Enterprise agents | Unsupervised agents that act without review |
-| **Playbooks** for SharePoint, Power Automate, GCP | Fake claims that MSFT workflows are already live |
-| **Demos & training packs** with synthetic data | Production automation |
-| **Governance** non-technical people can follow | “Official FedEx policy” cosplay |
+| **Offline explorer** for non-GitHub users | Unsupervised agents that act without review |
+| **Soul.md** guardrails for Gemini Enterprise | Fake claims that MSFT workflows are already live |
+| **Playbooks** for SharePoint, Power Automate, GCP | Production automation |
+| **Demos, workshop, announcements** | “Official FedEx policy” cosplay |
 
 **Success:** a new manager gets a useful draft in under five minutes and knows what never to paste.
 
@@ -65,18 +75,18 @@ In a leadership meeting: **[Meeting one-pager](docs/meeting-one-pager.md)** + **
 | [Customer & contractor](prompts/customer-and-contractor.md) | Scrubbed external-facing drafts |
 | [Governance-safe use](prompts/governance-safe-use.md) | “Is this safe?”, review prep |
 
-**45 prompts** indexed in [prompts/CATALOG.md](prompts/CATALOG.md).  
-**First-week set:** P01 · P02 · P08 · P15 · P20 · P44
+**45 prompts** in [CATALOG.md](prompts/CATALOG.md) · machine index [prompts.json](prompts/prompts.json)  
+**First-week set:** P01 · P02 · P08 · P15 · P20 · P44  
 
-### Every prompt
+After editing prompt markdown, rebuild explorer/json:
 
-1. Copy → 2. Fill `[brackets]` with scrubbed notes → 3. Paste into approved AI → 4. Edit → 5. Share  
+```bash
+node scripts/build-prompt-index.mjs
+```
 
 ---
 
 ## Agent souls (Gemini Enterprise)
-
-Paste a soul into the agent’s system instructions in the web UI.
 
 | Soul | Job |
 | --- | --- |
@@ -94,7 +104,7 @@ Build order: [playbooks/gemini-enterprise-day-one.md](playbooks/gemini-enterpris
 ## How the pieces fit
 
 ```text
-Manager job → Prompt or Gemini agent (soul) → Human review → Share / act
+Manager job → Explorer or prompt → Gemini agent (soul) → Human review → Share / act
                               │
                               └─ later: SharePoint front door
                                         Power Automate (approvals, not auto-send)
@@ -123,22 +133,24 @@ Manager job → Prompt or Gemini agent (soul) → Human review → Share / act
 4. A human owns every external message and operational decision.  
 5. Small pilots with metrics beat vague automation.  
 
-Full: [governance/safe-use-rules.md](governance/safe-use-rules.md) · [human-in-the-loop](governance/human-in-the-loop.md)
+Full: [safe-use-rules](governance/safe-use-rules.md) · [data cards](governance/data-cards.md) · [human-in-the-loop](governance/human-in-the-loop.md)
 
 ---
 
 ## Repo map
 
 ```text
-demos/             ← Live meeting demos (synthetic paste packs)
-prompts/           ← Copy-paste library + CATALOG.md
-souls/             ← Agent personas for Gemini Enterprise
-gemini-agents/     ← How to build agents in the web UI
-playbooks/         ← Gemini, SharePoint/PA, GCP, roadmap
-sharepoint/        ← Paste-ready page + card templates
-governance/        ← Safe use, review, human-in-the-loop
-docs/              ← Wallet card, meeting one-pager, scorecard, glossary
-appendix/          ← Prior example projects (footnote only)
+prompts/explorer.html  ← Offline UI for managers (start here)
+prompts/               ← Markdown source + CATALOG + prompts.json
+demos/                 ← Live meeting demos + sample good output
+souls/                 ← Agent personas for Gemini Enterprise
+gemini-agents/         ← How to build agents in the web UI
+playbooks/             ← Gemini, SharePoint/PA, GCP, roadmap
+sharepoint/            ← Paste-ready page + card templates
+governance/            ← Safe use, data cards, review checklists
+docs/                  ← Wallet card, FAQ, workshop, announcements
+scripts/               ← Rebuild explorer/json from markdown
+appendix/              ← Prior example projects (footnote only)
 ```
 
 ---
@@ -147,10 +159,10 @@ appendix/          ← Prior example projects (footnote only)
 
 | Area | Status |
 | --- | --- |
-| Prompts + catalog | Active |
-| Demos + wallet card | Active |
+| Prompt Explorer + catalog | Active |
+| Demos + wallet card + workshop | Active |
 | Gemini agents (souls) | Build in web UI now |
-| SharePoint content model | Paste-ready; configure when access lands |
+| SharePoint content model | Paste-ready |
 | Power Automate | Specs only until access + approval |
 | GCP sandbox | Plan ready |
 | Old starter apps | [Appendix only](appendix/prior-example-projects.md) |
@@ -160,11 +172,12 @@ appendix/          ← Prior example projects (footnote only)
 ## Appendix — prior example projects
 
 Earlier work mixed apps, CLIs, and research into one hub. Useful for learning; wrong front door for managers.  
-Details: [appendix/prior-example-projects.md](appendix/prior-example-projects.md) · legacy repo: [AI-Efficiency](https://github.com/arigatoexpress/AI-Efficiency)
+[appendix/prior-example-projects.md](appendix/prior-example-projects.md) · legacy: [AI-Efficiency](https://github.com/arigatoexpress/AI-Efficiency)
 
 ---
 
 ## Contributing
 
 Prefer one prompt, one soul, or one playbook section per change.  
-No secrets. No real ops data. See [CONTRIBUTING.md](CONTRIBUTING.md) · [AGENTS.md](AGENTS.md) · [CHANGELOG.md](CHANGELOG.md)
+Rebuild explorer after prompt edits: `node scripts/build-prompt-index.mjs`  
+No secrets. No real ops data. [CONTRIBUTING.md](CONTRIBUTING.md) · [AGENTS.md](AGENTS.md) · [CHANGELOG.md](CHANGELOG.md)

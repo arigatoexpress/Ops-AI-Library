@@ -5,6 +5,7 @@ For humans and AI assistants editing this repository.
 ## Product mandate
 
 This repo is a **prompt + soul + playbook library** for FedEx Operations Managers.  
+Front door for managers: **`prompts/explorer.html`**, not the GitHub file tree.  
 It is **not** an app monorepo. Do not re-center the README on dashboards, CLIs, or research spikes.
 
 ## Do
@@ -13,6 +14,7 @@ It is **not** an app monorepo. Do not re-center the README on dashboards, CLIs, 
 - Keep prompts scrubbed and anti-hallucination.  
 - Keep souls with Always / Never / refusal lines.  
 - Update `prompts/CATALOG.md` when adding prompts.  
+- Run `node scripts/build-prompt-index.mjs` after prompt markdown changes.  
 - Keep SharePoint/Power Automate content as **plans** until access is real.  
 - Prefer small PRs: one prompt pack, one soul, or one playbook section.
 
@@ -26,14 +28,16 @@ It is **not** an app monorepo. Do not re-center the README on dashboards, CLIs, 
 
 ## Verification before handoff
 
+- `node scripts/build-prompt-index.mjs` succeeds.  
+- Explorer opens and lists ~45 prompts.  
 - Links in README still resolve.  
-- New prompt listed in CATALOG.  
+- New prompt listed in CATALOG with ID.  
 - New soul linked from `souls/README.md` and `gemini-agents/README.md`.  
 - Demos still use synthetic data only.  
 - Language still says AI drafts / human decides.
 
 ## Related
 
-- Style and contrib: [CONTRIBUTING.md](CONTRIBUTING.md)  
-- Safety: [governance/safe-use-rules.md](governance/safe-use-rules.md)  
-- Legacy footnote: [appendix/prior-example-projects.md](appendix/prior-example-projects.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)  
+- [governance/safe-use-rules.md](governance/safe-use-rules.md)  
+- [appendix/prior-example-projects.md](appendix/prior-example-projects.md)

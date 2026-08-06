@@ -2,20 +2,21 @@
 
 Copy-paste prompts for FedEx Operations Managers who are new to AI.
 
-Every prompt:
+## Fastest path
 
-- Uses **scrubbed / placeholder data only**  
-- Asks the model **not to invent facts**  
-- Ends with a **human review** mindset  
-- Works in **Gemini Enterprise** and other approved tools  
+**Open [explorer.html](explorer.html) in your browser** — search, edit brackets, copy.  
+Works offline. Nothing you type is uploaded by that page.
 
-**Full index:** [CATALOG.md](CATALOG.md) (45 prompts)  
-**See it work:** [../demos/](../demos/README.md)  
-**Good vs bad:** [../docs/examples-before-after.md](../docs/examples-before-after.md)
+Also available:
+
+- [CATALOG.md](CATALOG.md) — full ID list (P00–P44)  
+- [prompts.json](prompts.json) — machine-readable index for agents / future SharePoint import  
+- [../demos/](../demos/README.md) — live meeting demos  
+- [../docs/examples-before-after.md](../docs/examples-before-after.md) — good vs bad  
 
 ## How to use (5 steps)
 
-1. Pick a category below (or find an ID in the catalog).  
+1. Open the Explorer **or** a category file below.  
 2. Copy one prompt.  
 3. Replace `[brackets]` with **non-sensitive** notes.  
 4. Paste into Gemini (or your approved tool).  
@@ -55,13 +56,12 @@ Never include real customer, employee, package, route, facility-security, or pro
 [Station A]  [Shift 2]  [Customer group]  [Volume range]  [Issue category]
 ```
 
-## Standard footer (add to any prompt)
+## Rebuild index (builders)
 
-```text
-Keep the answer concise. Separate facts from assumptions.
-Include "Needs verification" for anything you cannot confirm.
-End with owners (roles), next steps, and risks.
-This is a draft for human review — not an operational decision.
+After editing markdown prompts:
+
+```bash
+node scripts/build-prompt-index.mjs
 ```
 
 ## Pair with agent souls
