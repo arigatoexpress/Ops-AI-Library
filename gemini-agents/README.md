@@ -1,17 +1,16 @@
 # Gemini Agents
 
-We build agents in the **Gemini Enterprise web UI** first.  
-Code-first frameworks can wait until there is a clear need and approved platform path.
+We build agents in the **Gemini Enterprise web UI** first.
 
 ## Start here
 
-1. Read [playbooks/gemini-enterprise-day-one.md](../playbooks/gemini-enterprise-day-one.md)  
-2. Pick a soul from [souls/](../souls/README.md)  
-3. Attach matching prompts from [prompts/](../prompts/README.md)  
-4. Test with synthetic data only  
+1. [playbooks/gemini-enterprise-day-one.md](../playbooks/gemini-enterprise-day-one.md)  
+2. **[agent-setup-checklist.md](agent-setup-checklist.md)** ← print while building  
+3. Souls in [souls/](../souls/README.md)  
+4. Test with [demos/](../demos/README.md)  
 5. Pilot with a small manager group  
 
-## Agent catalog (target)
+## Agent catalog
 
 | Agent | Soul | Status |
 | --- | --- | --- |
@@ -22,27 +21,8 @@ Code-first frameworks can wait until there is a clear need and approved platform
 | Process Coach | process-coach.md | Second wave |
 | Governance Gatekeeper | governance-gatekeeper.md | Second wave |
 
-## Configuration template
+## Rules
 
-Copy into the agent’s description field:
-
-```text
-Helps FedEx Operations Managers draft [briefs / safety huddles / metric notes]
-from scrubbed notes. Always produces drafts for human review. Never uses
-confidential package, customer, or employee data.
-```
-
-## Knowledge files
-
-Allowed: blank templates, public training outlines, this library’s markdown.  
-Not allowed: real scorecards with sensitive fields, route files, HR data, customer lists.
-
-## Tools / actions
-
-Keep **disabled** until a reviewed Power Automate or platform workflow exists with a human approval step.
-
-## Related
-
-- [SharePoint delivery](../sharepoint/README.md)  
-- [Power Automate playbook](../playbooks/sharepoint-power-automate.md)  
-- [Human in the loop](../governance/human-in-the-loop.md)
+- Tools/actions **off** until approved workflow + human gate  
+- Knowledge files: templates only — no real confidential exports  
+- Version souls with a date when you change behavior  

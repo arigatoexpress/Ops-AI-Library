@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Rebuild prompts/prompts.json and prompts/explorer.html from markdown sources.
+ * Rebuild prompts/prompts.json DATA and refresh explorer.html embedded DATA.
  * Usage: node scripts/build-prompt-index.mjs
  */
 import fs from "node:fs";
@@ -87,6 +87,34 @@ const catalogTitles = {
   "Is This Safe To Try?": "P44",
 };
 
+const agentMap = {
+  P01: "Shift Brief Coach", P02: "Shift Brief Coach", P03: "Shift Brief Coach",
+  P04: "Shift Brief Coach", P05: "Shift Brief Coach", P06: "Shift Brief Coach",
+  P07: "Metrics Explainer",
+  P08: "Safety Huddle Coach", P09: "Safety Huddle Coach", P10: "Safety Huddle Coach",
+  P11: "Safety Huddle Coach", P12: "Safety Huddle Coach", P13: "Safety Huddle Coach",
+  P14: "Meeting Scribe", P15: "Meeting Scribe", P16: "Meeting Scribe",
+  P17: "Meeting Scribe", P18: "Meeting Scribe",
+  P19: "Metrics Explainer", P20: "Metrics Explainer", P21: "Metrics Explainer",
+  P22: "Metrics Explainer", P23: "Metrics Explainer",
+  P24: "Process Coach", P25: "Process Coach", P26: "Process Coach", P27: "Process Coach",
+  P28: "Process Coach", P29: "Shift Brief Coach", P30: "Process Coach", P31: "Process Coach",
+  P32: "Shift Brief Coach", P33: "Shift Brief Coach", P34: "Process Coach", P35: "Process Coach",
+  P36: "Meeting Scribe", P37: "Meeting Scribe", P38: "Meeting Scribe", P39: "Meeting Scribe",
+  P40: "Governance Gatekeeper", P41: "Governance Gatekeeper", P42: "Governance Gatekeeper",
+  P43: "Governance Gatekeeper", P44: "Governance Gatekeeper", P00: null,
+};
+
+const FIRST = new Set(["P01", "P02", "P08", "P15", "P20", "P44"]);
+const tips = {
+  P01: "Best first prompt. Scrub notes, then edit owners before sending.",
+  P02: "Use at end of shift. Roles only — no personal performance notes.",
+  P08: "Under 150 words. End with Safety Above All.",
+  P15: "Never invent owners or due dates — use Needs assignment.",
+  P20: "Hypotheses only — no causal claims without evidence.",
+  P44: "Use before any new AI idea or automation request.",
+};
+
 const prompts = [];
 for (const file of files) {
   const raw = fs.readFileSync(path.join(promptsDir, file), "utf8");
@@ -116,6 +144,9 @@ for (const file of files) {
       minutes: null,
       text,
       placeholders: [...new Set(placeholders)],
+      agent: agentMap[id] || null,
+      firstWeek: FIRST.has(id),
+      tip: tips[id] || "Scrub sensitive data. Treat output as a draft.",
     });
   }
 }
@@ -132,6 +163,7 @@ prompts.sort((a, b) => Number(a.id.replace(/\D/g, "")) - Number(b.id.replace(/\D
 
 const data = {
   generated: new Date().toISOString().slice(0, 10),
+  version: "1.3",
   count: prompts.length,
   rule: "AI drafts. You decide. Never paste tracking numbers, customer names, employee records, routes, or credentials into unapproved tools.",
   prompts,

@@ -10,44 +10,40 @@ Never paste tracking numbers, customer names, employee records, or credentials i
 Print: [manager-wallet-card.md](manager-wallet-card.md)  
 Full rules: [../governance/safe-use-rules.md](../governance/safe-use-rules.md)
 
-## 2. Try a safe demo first (no real notes needed)
+## 2. Open the Prompt Explorer
 
-Open [../demos/01-shift-brief.md](../demos/01-shift-brief.md), paste into Gemini, see the quality bar.
+Open [../prompts/explorer.html](../prompts/explorer.html) (or [../index.html](../index.html)).
 
-## 3. Pick one job you already do
+- First-week set is selected by default  
+- Try **Insert sample notes** on P01  
+- Watch the **sensitivity scan**  
+- **Copy prompt** → paste into Gemini Enterprise  
 
-| Job | Open |
+No GitHub skills required.
+
+## 3. Prefer paper?
+
+[print-pack-first-week.md](print-pack-first-week.md)
+
+## 4. First-week set
+
+| ID | Job |
 | --- | --- |
-| Start of shift | [Daily Manager Brief](../prompts/daily-operations.md) (P01) |
-| Handoff | [Shift Handoff](../prompts/daily-operations.md) (P02) |
-| Safety huddle | [Pre-Shift Safety Huddle](../prompts/safety-and-compliance.md) (P08) |
-| Meeting follow-up | [Notes to action items](../prompts/meeting-and-communication.md) (P15) |
-| “What does this number mean?” | [Metrics interpretation](../prompts/data-and-reporting.md) (P20) |
-| “Is this AI idea safe?” | [Is this safe?](../prompts/governance-safe-use.md) (P44) |
+| P01 | Daily Manager Brief |
+| P02 | Shift Handoff |
+| P08 | Pre-Shift Safety Huddle |
+| P15 | Notes → Action Items |
+| P20 | Metrics Interpretation |
+| P44 | Is This Safe To Try? |
 
-Full list: [../prompts/CATALOG.md](../prompts/CATALOG.md)
-
-## 4. Scrub your notes
-
-```text
-[Station A]  [Shift 2]  [Volume range]  [Issue category]
-```
-
-See [examples-before-after.md](examples-before-after.md) for risky vs safe pastes.
-
-## 5. Paste into Gemini Enterprise
-
-If your team set up agents, use **Shift Brief Coach** / **Safety Huddle Coach** / **Metrics Explainer**.  
-Otherwise paste the prompt into a normal Gemini chat.
-
-## 6. Edit before you share
+## 5. Edit before you share
 
 - Fix facts  
 - Remove guesses  
 - Add real owners from your org  
-- Send only what you would sign your name to  
+- Send only what you would sign  
 
-## 7. Tell us what worked
+## 6. Tell us what worked
 
-Good feedback: “Saved me 10 minutes on handoff” or “It invented a delay cause.”  
-Use the GitHub **Feedback** issue template or your team’s form.
+Minutes saved · what you fixed · anything invented.  
+Use the feedback issue template or your team form.

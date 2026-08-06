@@ -4,15 +4,21 @@ Copy-paste prompts for FedEx Operations Managers who are new to AI.
 
 ## Fastest path
 
-**Open [explorer.html](explorer.html) in your browser** — search, edit brackets, copy.  
-Works offline. Nothing you type is uploaded by that page.
+**Open [explorer.html](explorer.html)** in your browser.
 
-Also available:
+- Search / filter by category, first-week set, or Gemini agent  
+- Fill `[brackets]` with helpers  
+- **Sensitivity scan** warns on tracking/PII-like patterns  
+- Copy into Gemini Enterprise  
+- Nothing is uploaded by this page  
 
-- [CATALOG.md](CATALOG.md) — full ID list (P00–P44)  
-- [prompts.json](prompts.json) — machine-readable index for agents / future SharePoint import  
-- [../demos/](../demos/README.md) — live meeting demos  
-- [../docs/examples-before-after.md](../docs/examples-before-after.md) — good vs bad  
+Also:
+
+- [../index.html](../index.html) — offline hub  
+- [CATALOG.md](CATALOG.md) — IDs P00–P44  
+- [prompts.json](prompts.json) — machine index  
+- [../docs/print-pack-first-week.md](../docs/print-pack-first-week.md) — paper version  
+- [../demos/](../demos/README.md) — live demos  
 
 ## How to use (5 steps)
 
@@ -27,43 +33,23 @@ Also available:
 | File | Use it for |
 | --- | --- |
 | [00-how-to-write-prompts.md](00-how-to-write-prompts.md) | Learn the simple formula |
-| [daily-operations.md](daily-operations.md) | Shift briefs, handoffs, escalations, after-action reviews |
-| [safety-and-compliance.md](safety-and-compliance.md) | Huddles, near-miss structure, seasonal alerts |
-| [meeting-and-communication.md](meeting-and-communication.md) | Agendas, action items, emails, exec updates |
+| [daily-operations.md](daily-operations.md) | Shift briefs, handoffs, escalations |
+| [safety-and-compliance.md](safety-and-compliance.md) | Huddles, near-miss structure |
+| [meeting-and-communication.md](meeting-and-communication.md) | Agendas, action items, emails |
 | [data-and-reporting.md](data-and-reporting.md) | Metrics in plain English |
-| [process-improvement.md](process-improvement.md) | Root cause, standard work, pilots |
-| [peak-season-and-surge.md](peak-season-and-surge.md) | Peak planning and surge response |
+| [process-improvement.md](process-improvement.md) | Root cause, pilots |
+| [peak-season-and-surge.md](peak-season-and-surge.md) | Peak planning |
 | [linehaul-and-routing.md](linehaul-and-routing.md) | Delay and coordination drafts |
 | [customer-and-contractor.md](customer-and-contractor.md) | Scrubbed external-facing drafts |
-| [governance-safe-use.md](governance-safe-use.md) | Is this idea safe? Review prep |
+| [governance-safe-use.md](governance-safe-use.md) | Is this idea safe? |
 
-## First-week set (new managers)
+## First-week set
 
-| ID | Prompt |
-| --- | --- |
-| P01 | Daily Manager Brief |
-| P02 | Shift Handoff |
-| P08 | Pre-Shift Safety Huddle |
-| P15 | Notes → Action Items |
-| P20 | Metrics Interpretation |
-| P44 | Is This Safe To Try? |
+P01 · P02 · P08 · P15 · P20 · P44
 
-## Safe Prompt Rule
-
-Never include real customer, employee, package, route, facility-security, or proprietary data unless the tool and workflow are **approved** for that data.
-
-```text
-[Station A]  [Shift 2]  [Customer group]  [Volume range]  [Issue category]
-```
-
-## Rebuild index (builders)
-
-After editing markdown prompts:
+## Rebuild (builders)
 
 ```bash
 node scripts/build-prompt-index.mjs
+node scripts/check-docs.mjs
 ```
-
-## Pair with agent souls
-
-For repeated work, attach a [soul.md](../souls/README.md) in Gemini Enterprise so you do not re-teach the rules every time.
