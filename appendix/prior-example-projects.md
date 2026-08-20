@@ -6,13 +6,15 @@ This program previously explored a wider set of **starter apps, CLIs, and resear
 
 Those projects were valuable for learning. They are **not** the product mandate for Ops AI Library.
 
+For the current ownership/runtime map, use **[Product Portfolio Boundaries](../docs/product-portfolio-boundaries.md)**. In particular, RECON and Delivery Markets are standalone application products; Sapphire Nexus is a separate, company-neutral platform.
+
 ## What lived there (summary)
 
 | Area | Examples (legacy) | Status for this program |
 | --- | --- | --- |
 | Offline KPI tools | Dock Efficiency Signal Lab, TLH/SPH Explorer | Historical / optional demo |
 | Deterministic CLIs | Priority Metrics Intelligence, Operations Decision Lab | Historical / optional |
-| Full-stack demo | Logistics Intelligence dashboard | Historical / optional |
+| Full-stack demo | Logistics Intelligence dashboard / RECON seed | Historical source; application ownership moves outside this library |
 | Agent starter kit | ADK Shift-Brief Agent | Concepts absorbed into **souls + Gemini web UI** |
 | Research spikes | Forecast foundation model, FHE scoring | Research footnote only |
 | Prompt library | 50+ ops prompts | **Carried forward and simplified here** |
@@ -27,7 +29,9 @@ Those projects were valuable for learning. They are **not** the product mandate 
 
 ## If someone asks for the old demos
 
-Point them to the legacy repo README and treat demos as **optional show-and-tell**, not onboarding.
+Use the portfolio boundary document first. Optional demos can be linked from this library, but their source, CI, secrets, Cloud Run services, and operational ownership stay in their own application repositories.
+
+The old `AI-Efficiency` README is historical context, **not** the current FedEx program front door.
 
 ## Rule going forward
 
