@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-27 - v2.0 Concept portfolio and meeting release
+
+- Integrated and attributed Travis Long's Virtual Ride-Along Agent, Zero-Click Compliance Agent, EAVA, and ACT proposals
+- Added a common evidence envelope, action ladder, architecture boundaries, validation gates, and current Google platform terminology
+- Replaced root-level Zero-Click scripts with a synthetic, deterministic, Drafts-only prototype and unit tests
+- Removed real employee/contact examples from the current tree; public fixtures now use placeholders and `.invalid` addresses
+- Rebuilt the README around manager adoption, concept incubation, governance, and clear product/runtime boundaries
+- Added the August 27 weekly-meeting brief and Gemini Enterprise interview story, master prompt, and measurement plan
+- Kept uploaded facility/KPI source data out of the public repository
+
 ## 2026-08-06 — v1.4 SharePoint page template
 
 - **`sharepoint/ops-ai-library-page-template.html`** — ready-to-upload manager page (hero, safe use, 6 starters, Copy buttons)

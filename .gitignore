@@ -3,12 +3,14 @@
 # ------------------------------------------------
 .env
 fedex_workday_session.json
+*.session.json
 
 # ------------------------------------------------
 # EMPLOYEE DATA (PII) - DO NOT UPLOAD
 # ------------------------------------------------
 expiring_compliance_data.csv
 *.csv
+generated_drafts/
 
 # ------------------------------------------------
 # Python System Files

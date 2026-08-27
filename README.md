@@ -1,127 +1,111 @@
 # Ops AI Library
 
-**AI drafts. You decide.**  
-Copy-paste prompts and Gemini agent “souls” so FedEx Operations Managers can use AI safely — without being technical.
+**Manager-ready AI patterns for safer, faster operations work.**
 
-> Not a software product. Not official FedEx policy. Not for confidential package/customer/employee data in unapproved tools.
+This repository brings together copy-ready Gemini workflows, reusable agent instructions, governance controls, training material, and a reviewed incubator for operational AI concepts.
 
-**[Open the hub](index.html)** · **[Prompt Explorer](prompts/explorer.html)** · **[SharePoint page template](sharepoint/ops-ai-library-page-template.html)** · [GitHub](https://github.com/arigatoexpress/Ops-AI-Library)
+> **Prototype portfolio - not an official FedEx product or policy.** Use only approved enterprise tools and approved data. AI drafts and recommendations require human review. Never commit or paste customer, package, employee, route, security, credential, or facility-sensitive data into public or unapproved systems.
 
----
-
-## Use it in 60 seconds
-
-### Option A — SharePoint / Teams (best for your team site)
-
-1. Upload **[sharepoint/ops-ai-library-page-template.html](sharepoint/ops-ai-library-page-template.html)** to a SharePoint library  
-2. Teams channel → **+** → **Website** tab → paste the file link  
-3. Managers open the tab → **Copy prompt** → paste into Gemini → edit  
-
-Recipe: [sharepoint/sharepoint-native-page-recipe.md](sharepoint/sharepoint-native-page-recipe.md)
-
-### Option B — Prompt Explorer
-
-1. Open **[prompts/explorer.html](prompts/explorer.html)**  
-2. Start with **P01 Daily Manager Brief**  
-3. Copy → Gemini Enterprise → edit draft  
-
-### Option C — Print / paper
-
-- [Manager wallet card](docs/manager-wallet-card.md)  
-- [First-week print pack](docs/print-pack-first-week.md)
-
-**Also:** [Getting started](docs/getting-started-for-managers.md) · [FAQ](docs/faq.md) · [Meeting one-pager](docs/meeting-one-pager.md) · [Teams announcement](docs/teams-announcement.md)
+[Open the offline hub](index.html) · [Browse 45 prompts](prompts/explorer.html) · [Prepare for the weekly meeting](docs/weekly-meeting-2026-08-27.md) · [Review the concept portfolio](concepts/README.md)
 
 ---
 
-## Start here
+## What is ready today
 
-| If you want… | Go here |
+| Track | Artifact | Status | Manager value |
+| --- | --- | --- | --- |
+| Adopt | [Prompt Explorer](prompts/explorer.html) | Ready for approved use | Find, fill, and copy a guarded prompt in minutes |
+| Adopt | [Gemini agent souls](souls/README.md) | Ready to configure | Reusable behavior for briefs, meetings, metrics, process improvement, and governance |
+| Enable | [SharePoint / Teams page](sharepoint/ops-ai-library-page-template.html) | Template ready | Gives a team a simple front door without GitHub fluency |
+| Govern | [Safe-use rules](governance/safe-use-rules.md) and [review checklist](governance/project-review-checklist.md) | Active guardrails | Keeps data handling and human accountability explicit |
+| Incubate | [Operational AI concepts](concepts/README.md) | Concept / validation | Converts team ideas into testable, reviewable proposals |
+| Prepare | [Gemini Enterprise story kit](docs/gemini-enterprise-story-prep.md) | Interview draft | Packages the workflow, technique, evidence plan, and replicable takeaway |
+
+## Start in 60 seconds
+
+1. Open [Prompt Explorer](prompts/explorer.html).
+2. Choose a first-week prompt such as **P01 Daily Manager Brief** or **P20 Metrics Summary**.
+3. Replace placeholders with approved, scrubbed facts or safe aggregates.
+4. Paste into Gemini Enterprise, review every claim against the source, and edit before sharing or acting.
+
+For a team launch, use the [SharePoint native-page recipe](sharepoint/sharepoint-native-page-recipe.md), [15-minute workshop](docs/workshop-15-min.md), and [first-week print pack](docs/print-pack-first-week.md).
+
+---
+
+## Operational AI concept portfolio
+
+Travis Long's August 2026 proposals are now organized as a governed concept portfolio instead of loose documents or root-level demo scripts.
+
+| Concept | Role in the portfolio | Current gate |
+| --- | --- | --- |
+| [Zero-Click Compliance Agent](concepts/zero-click-compliance/README.md) | Retrieves approved compliance facts, grounds the required response in policy, and prepares drafts for review | Synthetic demo only; identity, data-owner, legal, and platform approval required |
+| [Virtual Ride-Along Agent](concepts/virtual-ride-along-agent.md) | Translates route-condition telemetry into an evidence package for human review | Sensor calibration, privacy, consent, device, map-license, and FLME-owner validation required |
+| [EAVA](concepts/eava.md) | Produces privacy-minimized flow and jam-risk metadata from approved camera feeds | Camera authority, edge benchmark, model validation, cybersecurity, and safety review required |
+| [ACT](concepts/act.md) | Combines operational signals into ranked interventions and an auditable manager action plan | Advisory-only pilot before any hardware or labor action integration |
+
+The concepts share one operating principle: **sense or retrieve facts, reason within explicit constraints, then prepare the smallest reversible action for a human decision.**
+
+```mermaid
+flowchart TD
+    A["Approved signals and documents"] --> B{"Assistance path"}
+    B --> C["Knowledge and compliance"]
+    B --> D["Physical operations"]
+    C --> E["Evidence and recommendation"]
+    D --> E
+    E --> F["Human review and approved action"]
+```
+
+See the [integrated architecture](concepts/integrated-operations-architecture.md) for boundaries, event flow, and shared controls.
+
+---
+
+## Library map
+
+| Need | Go to |
 | --- | --- |
-| SharePoint / Teams page (upload & go) | **[sharepoint/ops-ai-library-page-template.html](sharepoint/ops-ai-library-page-template.html)** |
-| Browse & copy prompts offline | [prompts/explorer.html](prompts/explorer.html) |
-| Offline hub homepage | [index.html](index.html) |
-| Prompt list by ID | [prompts/CATALOG.md](prompts/CATALOG.md) |
-| Safe use + data cards | [governance/safe-use-rules.md](governance/safe-use-rules.md) · [data-cards](governance/data-cards.md) |
-| Build Gemini agents | [gemini-agents/](gemini-agents/README.md) · [setup checklist](gemini-agents/agent-setup-checklist.md) |
-| Power Automate designs | [playbooks/sharepoint-power-automate.md](playbooks/sharepoint-power-automate.md) |
-| GCP sandbox | [playbooks/gcp-sandbox.md](playbooks/gcp-sandbox.md) |
+| Use a prompt | [Prompt catalog](prompts/CATALOG.md) · [Prompt Explorer](prompts/explorer.html) |
+| Build a Gemini agent | [Agent souls](souls/README.md) · [setup checklist](gemini-agents/agent-setup-checklist.md) |
+| Launch with managers | [Getting started](docs/getting-started-for-managers.md) · [FAQ](docs/faq.md) · [workshop](docs/workshop-15-min.md) |
+| Put it in Teams / SharePoint | [Page template](sharepoint/ops-ai-library-page-template.html) · [native recipe](sharepoint/sharepoint-native-page-recipe.md) |
+| Review risk and data use | [Safe-use rules](governance/safe-use-rules.md) · [data cards](governance/data-cards.md) · [human in the loop](governance/human-in-the-loop.md) |
+| Review a new idea | [Concept portfolio](concepts/README.md) · [project review checklist](governance/project-review-checklist.md) |
+| Plan the cloud path | [GCP sandbox](playbooks/gcp-sandbox.md) · [Gemini Enterprise day one](playbooks/gemini-enterprise-day-one.md) |
+| Run this week's meeting | [August 27 meeting brief](docs/weekly-meeting-2026-08-27.md) |
 
----
+## Portfolio boundaries
 
-## Mandate
+This repository is the **manager enablement and concept-incubation layer**. It can hold prompts, training, governance, architecture proposals, synthetic proof-of-concept artifacts, and links to canonical applications. It is not the production runtime for every application.
 
-| We build | We do not build here |
-| --- | --- |
-| Prompt libraries + offline explorer + SharePoint page | Dashboard monorepos as the product |
-| Soul.md guardrails for Gemini | Unsupervised auto-send agents |
-| SharePoint / Power Automate / GCP **playbooks** | Fake “workflows are live” claims |
-| Demos, workshop, print packs | Official FedEx policy cosplay |
+- Production code, secrets, runtime identities, and operational data stay in approved, product-specific environments.
+- Concepts do not become pilot-ready because they have a diagram or demo.
+- Synthetic demonstrations must be labeled and must never imitate live success.
+- Every promotion requires a named owner, approved data path, evaluation plan, rollback path, and human decision point.
 
-**Success:** a new manager gets a useful draft in under five minutes and knows what never to paste.
+Read the complete [product portfolio boundaries](docs/product-portfolio-boundaries.md).
 
----
+## Safety and evidence standard
 
-## Prompt library
+1. **Source before summary.** Every factual claim must trace to an approved source.
+2. **Facts before causes.** Correlation, forecast, or anomaly does not prove root cause.
+3. **Draft before action.** The default agency level is draft or recommend.
+4. **Least data.** Prefer synthetic examples, aggregates, categories, and short retention.
+5. **Smallest safe pilot.** Validate one workflow, one owner, one environment, and one success metric before scaling.
+6. **No invented ROI.** Label targets, modeled estimates, and measured results separately.
 
-| Category | Use for |
-| --- | --- |
-| [How to write prompts](prompts/00-how-to-write-prompts.md) | Simple formula |
-| [Daily operations](prompts/daily-operations.md) | Briefs, handoffs, escalations |
-| [Safety & compliance](prompts/safety-and-compliance.md) | Huddles, near-miss structure |
-| [Meetings & communication](prompts/meeting-and-communication.md) | Agendas, actions, emails |
-| [Data & reporting](prompts/data-and-reporting.md) | Metrics in plain English |
-| [Process improvement](prompts/process-improvement.md) | Root cause, pilots |
-| [Peak season & surge](prompts/peak-season-and-surge.md) | Peak planning |
-| [Linehaul & routing](prompts/linehaul-and-routing.md) | Delay framing |
-| [Customer & contractor](prompts/customer-and-contractor.md) | Scrubbed external drafts |
-| [Governance-safe use](prompts/governance-safe-use.md) | “Is this safe?” |
-
-**45 prompts** · [CATALOG](prompts/CATALOG.md) · [prompts.json](prompts/prompts.json)  
-**First-week set:** P01 · P02 · P08 · P15 · P20 · P44  
+## Maintainer checks
 
 ```bash
 node scripts/build-prompt-index.mjs
 node scripts/check-docs.mjs
+python3 -m unittest discover -s concepts/zero-click-compliance/prototype/tests -v
 ```
-
----
-
-## Agent souls (Gemini Enterprise)
-
-| Soul | Job |
-| --- | --- |
-| [Shift Brief Coach](souls/shift-brief-coach.md) | Briefs / handoffs / closeouts |
-| [Safety Huddle Coach](souls/safety-huddle-coach.md) | 2-minute safety scripts |
-| [Metrics Explainer](souls/metrics-explainer.md) | Numbers without invented causes |
-| [Meeting Scribe](souls/meeting-scribe.md) | Agendas & action tables |
-| [Process Coach](souls/process-coach.md) | Improvement + pilot design |
-| [Governance Gatekeeper](souls/governance-gatekeeper.md) | Green / Yellow / Red checks |
-
----
-
-## Safety
-
-1. Protect people, customers, and the company first.  
-2. AI = drafts — not unchecked decisions.  
-3. Never paste confidential / customer / employee / package / route / security data into unapproved tools.  
-4. A human owns every external message and operational decision.  
-5. Small pilots with metrics beat vague automation.  
-
----
-
-## Status
-
-| Area | Status |
-| --- | --- |
-| SharePoint page template (HTML) | Active — upload to blank site |
-| Prompt Explorer + first-week pack | Active |
-| Gemini souls | Build in web UI now |
-| Power Automate | Specs ready when access lands |
-| Legacy apps | [Appendix](appendix/prior-example-projects.md) |
-
----
 
 ## Contributing
 
-[CONTRIBUTING.md](CONTRIBUTING.md) · [AGENTS.md](AGENTS.md) · [CHANGELOG.md](CHANGELOG.md)
+Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). New concepts must use the intake and validation gates in [concepts/README.md](concepts/README.md). Report sensitive material privately as described in [SECURITY.md](SECURITY.md).
+
+## Attribution
+
+- **Ops AI Library and integrated enablement program:** AI Efficiency Group contributors
+- **Zero-Click Compliance Agent, Virtual Ride-Along Agent, EAVA, and ACT concepts:** Travis Long
+- **Human review and final operational accountability:** the authorized business owner for each use case

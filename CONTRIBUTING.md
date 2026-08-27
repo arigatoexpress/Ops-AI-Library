@@ -1,5 +1,11 @@
 # Contributing
 
+## Concept contributions
+
+New operational AI ideas belong under `concepts/` and must use the status model in `concepts/README.md`. State the supported decision, minimum necessary data, prohibited uses, human reviewer, failure modes, evaluation plan, approval needs, and smallest safe pilot.
+
+Concepts may include a small synthetic proof-of-concept only when it demonstrates a contract or guardrail. Do not add production integrations, credentials, real employee/facility data, browser sessions, raw video/audio, or autonomous control logic.
+
 Thank you for helping Operations Managers use AI safely.
 
 ## What to contribute
