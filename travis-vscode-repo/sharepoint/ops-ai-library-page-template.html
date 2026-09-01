@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ops AI Library — SharePoint Page Template</title>
+<meta name="description" content="Manager-facing Ops AI Library page for SharePoint / Teams. AI drafts. You decide." />
+<style>
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --ink: #1b2430;
+    --muted: #5b6b7c;
+    --line: #d9e1ec;
+    --navy: #0b2d5c;
+    --navy2: #123f7a;
+    --teal: #0d7c74;
+    --teal-soft: #e6f6f4;
+    --amber: #8a5a00;
+    --amber-bg: #fff6e5;
+    --amber-line: #f0c36a;
+    --red-soft: #fff1f0;
+    --red-line: #f0b4ae;
+    --green: #0f7a4c;
+    --green-bg: #e8f7ef;
+    --shadow: 0 8px 28px rgba(15, 35, 70, 0.08);
+    --radius: 16px;
+    --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background:
+      radial-gradient(900px 420px at 0% 0%, #dce9ff 0%, transparent 55%),
+      radial-gradient(700px 380px at 100% 0%, #d8f3ef 0%, transparent 50%),
+      var(--bg);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+  .hero {
+    background: linear-gradient(145deg, var(--navy) 0%, var(--navy2) 55%, #0d5c62 100%);
+    color: #fff;
+    border-radius: 22px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.9;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.2rem); line-height: 1.15; }
+  .hero .tagline { margin: 0 0 18px; font-size: 1.05rem; opacity: 0.92; max-width: 40rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    appearance: none;
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary { background: #fff; color: var(--navy); }
+  .btn-primary:hover { filter: brightness(0.97); }
+  .btn-ghost { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.28); }
+  .btn-copy { background: var(--teal); color: #fff; white-space: nowrap; }
+  .btn-copy:hover { filter: brightness(1.05); }
+  .btn-copy.copied { background: var(--green); }
+  .alert {
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin: 16px 0;
+    border: 1px solid var(--amber-line);
+    background: var(--amber-bg);
+    color: var(--amber);
+  }
+  .alert strong { color: #6b4500; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 18px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 1.15rem;
+    color: var(--navy);
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (max-width: 760px) {
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+  .steps li {
+    background: #f3f7fc;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .steps .n {
+    display: inline-flex;
+    width: 24px; height: 24px;
+    border-radius: 999px;
+    align-items: center; justify-content: center;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .steps strong { display: block; margin-bottom: 2px; }
+  .steps span { color: var(--muted); font-size: 0.9rem; }
+  .week {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 760px) {
+    .week { grid-template-columns: 1fr; }
+  }
+  .week a {
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: #fbfcfe;
+    display: block;
+  }
+  .week a:hover { border-color: #9db7de; background: #f3f8ff; }
+  .week .k { color: var(--teal); font-weight: 800; font-size: 0.8rem; }
+  .week .t { font-weight: 700; margin-top: 2px; }
+  .week .m { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+  .prompt-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .prompt-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .pid {
+    color: var(--teal);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .prompt-card h3 { margin: 4px 0 0; font-size: 1.15rem; color: var(--navy); }
+  .tip {
+    margin: 10px 0;
+    padding: 10px 12px;
+    background: var(--teal-soft);
+    border-radius: 10px;
+    color: #0b5b56;
+    font-size: 0.92rem;
+  }
+  .prompt-text {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #0f1724;
+    color: #e8eef8;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    max-height: 280px;
+    overflow: auto;
+  }
+  .status {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: var(--green);
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 760px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  .mini {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+    background: #fbfcfe;
+  }
+  .mini h3 { margin: 0 0 6px; font-size: 0.98rem; color: var(--navy); }
+  .mini p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  .dont {
+    border-color: var(--red-line);
+    background: var(--red-soft);
+  }
+  .dont h3 { color: #9b2c2c; }
+  .footer {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 0.86rem;
+    text-align: center;
+    line-height: 1.55;
+  }
+  .footer a { color: var(--navy2); }
+  .sticky-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+    background: rgba(245,247,251,0.9);
+    border-bottom: 1px solid var(--line);
+    margin: -24px -16px 16px;
+    padding: 10px 16px;
+  }
+  .sticky-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sticky-inner nav { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sticky-inner a {
+    text-decoration: none;
+    color: var(--navy);
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 10px;
+  }
+  .sticky-inner a:hover { border-color: #9db7de; }
+  .note {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="sticky-bar">
+      <div class="sticky-inner">
+        <strong style="color:var(--navy);font-size:0.92rem;">Ops AI Library</strong>
+        <nav>
+          <a href="#how">How to use</a>
+          <a href="#starters">Starters</a>
+          <a href="#safe">Safe use</a>
+          <a href="#feedback">Feedback</a>
+        </nav>
+      </div>
+    </div>
+
+    <header class="hero">
+      <div class="eyebrow">SharePoint / Teams page template · Manager front door</div>
+      <h1>Ops AI Library</h1>
+      <p class="tagline">
+        <strong>AI drafts. You decide.</strong>
+        Copy-paste prompts for Operations Managers — safer briefs, clearer handoffs,
+        less blank-page time. No coding required.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#starters">Start with a prompt</a>
+        <a class="btn btn-ghost" href="#safe">Safe use rules</a>
+        <a class="btn btn-ghost" href="https://github.com/arigatoexpress/Ops-AI-Library" target="_blank" rel="noopener">GitHub source</a>
+      </div>
+    </header>
+
+    <div class="alert">
+      <strong>Do not paste</strong> tracking numbers, customer names, employee records,
+      routes, GPS, signatures, or passwords into unapproved tools.
+      Every AI answer is a <strong>draft for human review</strong>.
+    </div>
+
+    <section class="card" id="how">
+      <h2>How to use (4 steps)</h2>
+      <ol class="steps">
+        <li><div class="n">1</div><strong>Scrub</strong><span>Remove tracking #s, names, and private details. Use [brackets].</span></li>
+        <li><div class="n">2</div><strong>Copy</strong><span>Pick a starter prompt below and click Copy prompt.</span></li>
+        <li><div class="n">3</div><strong>Paste</strong><span>Put it into Gemini Enterprise (or your approved tool).</span></li>
+        <li><div class="n">4</div><strong>Edit</strong><span>Fix facts, then share only what you would sign.</span></li>
+      </ol>
+      <p class="note">Prefer paper? Print the wallet card and first-week pack from the GitHub docs folder.</p>
+    </section>
+
+    <section class="card" id="week">
+      <h2>This week’s starters</h2>
+      <div class="week">
+        <a href="#P01"><div class="k">P01 · Mon</div><div class="t">Daily Manager Brief</div><div class="m">~5 min</div></a>
+        <a href="#P02"><div class="k">P02 · Tue</div><div class="t">Shift Handoff</div><div class="m">~5 min</div></a>
+        <a href="#P08"><div class="k">P08 · Wed</div><div class="t">Safety Huddle</div><div class="m">~3 min</div></a>
+        <a href="#P15"><div class="k">P15 · Thu</div><div class="t">Notes → Actions</div><div class="m">~5 min</div></a>
+        <a href="#P20"><div class="k">P20 · Fri</div><div class="t">Metrics Interpretation</div><div class="m">~8 min</div></a>
+        <a href="#P44"><div class="k">P44 · Anytime</div><div class="t">Is This Safe To Try?</div><div class="m">~5 min</div></a>
+      </div>
+    </section>
+
+    <section id="starters">
+      <div class="card" style="margin-bottom:12px;">
+        <h2>Starter prompts (copy into Gemini)</h2>
+        <p class="note" style="margin:0;">These six are enough for launch. Full catalog lives in GitHub / Prompt Explorer.</p>
+      </div>
+
+      <article class="prompt-card" id="P01" data-id="P01">
+        <div class="prompt-top">
+          <div>
+            <div class="pid">P01 · ~5 min · Monday</div>
+            <h3>Daily Manager Brief</h3>
+          </div>
+          <button type="button" class="btn btn-copy" data-copy="P01">Copy prompt</button>
+        </div>
+        <p class="tip">Best first prompt. Scrub notes, then edit owners before sending.</p>
+        <pre class="prompt-text" id="text-P01">Act as a FedEx FEC supervisor or manager preparing a concise daily brief for your station or hub.
+
+Context (scrubbed — no real names, addresses, tracking numbers, or sensitive package counts):
+[Paste non-sensitive shift notes, volume ranges, staffing notes, weather summary,
+equipment notes, and known constraints.]
+
+Create a daily brief with:
+- Top 5 priorities for this shift
+- Risks to watch (weather, road, equipment, staffing)
+- Sort hub / P&D / linehaul coordination notes
+- Decisions needed and who should make them (roles, not personal names)
+- Owner and next step for each item
+
+Rules:
+- Do not invent facts.
+- Put unclear items under "Needs verification."
+- Keep it under 300 words.
+- Include a safety reminder.
+- Label the whole output as a draft for manager review.</pre>
+        <div class="status" id="status-P01" hidden></div>
+      </article>
+
+      <article class="prompt-card" id="P02" data-id="P02">
+        <div class="prompt-top">
+          <div>
+            <div class="pid">P02 · ~5 min · Tuesday</div>
+            <h3>Shift Handoff</h3>
+          </div>
+          <button type="button" class="btn btn-copy" data-copy="P02">Copy prompt</button>
+        </div>
+        <p class="tip">Use at end of shift. Roles only — no personal performance notes.</p>
+        <pre class="prompt-text" id="text-P02">Turn these non-sensitive notes into a shift handoff for the incoming supervisor or manager.
+
+Outgoing shift: [Day/Evening/Night]
+Incoming shift: [Day/Evening/Night]
+Tone: direct, calm, and action-oriented
+
+Notes (scrubbed):
+[Paste notes. Remove all real names, addresses, tracking numbers, and package details.]
+
+Return:
+1. What changed since the last handoff
+2. What is still open
+3. High-risk items (safety, customer, linehaul)
+4. Who owns each next step (roles, not names)
+5. What to check first in the next shift
+6. One safety reminder
+
+Do not invent facts. Use "Needs verification" where details are missing.</pre>
+        <div class="status" id="status-P02" hidden></div>
+      </article>
+
+      <article class="prompt-card" id="P08" data-id="P08">
+        <div class="prompt-top">
+          <div>
+            <div class="pid">P08 · ~3 min · Wednesday</div>
+            <h3>Pre-Shift Safety Huddle Brief</h3>
+          </div>
+          <button type="button" class="btn btn-copy" data-copy="P08">Copy prompt</button>
+        </div>
+        <p class="tip">Under 150 words. End with Safety Above All.</p>
+        <pre class="prompt-text" id="text-P08">Act as a safety-focused FEC supervisor or manager preparing a 2-minute huddle brief.
+
+Station: [Station name or code — if non-sensitive]
+Shift: [Day/Evening/Night]
+Season/Conditions: [e.g., winter ice, summer heat, rain]
+Known equipment status: [e.g., all scanners functional, 2 dollies out for repair]
+
+Return:
+- 1 safety focus for this shift
+- 1 quick check everyone should do before starting
+- 1 reminder about PPE or equipment inspection
+- 1 "see something, say something" prompt
+- End with: "Safety Above All. Questions before we start?"
+
+Keep it under 150 words. Direct, respectful language.
+Do not include real employee names or past incident details.</pre>
+        <div class="status" id="status-P08" hidden></div>
+      </article>
+
+      <article class="prompt-card" id="P15" data-id="P15">
+        <div class="prompt-top">
+          <div>
+            <div class="pid">P15 · ~5 min · Thursday</div>
+            <h3>Meeting Notes To Action Items</h3>
+          </div>
+          <button type="button" class="btn btn-copy" data-copy="P15">Copy prompt</button>
+        </div>
+        <p class="tip">Never invent owners or due dates — use Needs assignment.</p>
+        <pre class="prompt-text" id="text-P15">Convert these meeting notes into action items.
+
+Notes (scrubbed):
+[Paste non-sensitive notes.]
+
+Return a table:
+Owner (role) | Action | Due date | Dependency | Risk if missed
+
+If owner or due date is missing, write "Needs assignment" or "Needs date."
+Do not invent owners or deadlines.</pre>
+        <div class="status" id="status-P15" hidden></div>
+      </article>
+
+      <article class="prompt-card" id="P20" data-id="P20">
+        <div class="prompt-top">
+          <div>
+            <div class="pid">P20 · ~8 min · Friday</div>
+            <h3>Metrics Interpretation</h3>
+          </div>
+          <button type="button" class="btn btn-copy" data-copy="P20">Copy prompt</button>
+        </div>
+        <p class="tip">Hypotheses only — no causal claims without evidence.</p>
+        <pre class="prompt-text" id="text-P20">Help interpret these metrics.
+
+Metrics:
+[Paste non-sensitive metric names and values.]
+
+Context:
+[Describe time period and operation in general terms.]
+
+Return:
+- What looks normal
+- What looks unusual
+- Possible explanations (labeled as hypotheses)
+- Follow-up data needed
+- Actions that are safe now (information-gathering only)
+- Actions that should wait for confirmation
+
+Do not invent missing values. Mark gaps "Needs verification."</pre>
+        <div class="status" id="status-P20" hidden></div>
+      </article>
+
+      <article class="prompt-card" id="P44" data-id="P44">
+        <div class="prompt-top">
+          <div>
+            <div class="pid">P44 · ~5 min · Anytime</div>
+            <h3>Is This Safe To Try?</h3>
+          </div>
+          <button type="button" class="btn btn-copy" data-copy="P44">Copy prompt</button>
+        </div>
+        <p class="tip">Use before any new AI idea or automation request.</p>
+        <pre class="prompt-text" id="text-P44">I want to use AI for this task. Tell me if it is safe as described.
+
+Task:
+[Describe task.]
+
+Tool I plan to use:
+[Gemini Enterprise / other approved tool / unknown]
+
+Data I would provide:
+[Categories only]
+
+Return:
+- Green / Yellow / Red rating
+- Why
+- Safer alternative if Red or Yellow
+- Minimum human review step
+- What approval I should seek before piloting</pre>
+        <div class="status" id="status-P44" hidden></div>
+      </article>
+    </section>
+
+    <section class="card" id="safe">
+      <h2>Safe use (non-negotiable)</h2>
+      <div class="grid-2">
+        <div class="mini">
+          <h3>Do</h3>
+          <p>
+            Use approved tools only (e.g., Gemini Enterprise).<br />
+            Scrub notes before pasting.<br />
+            Label AI text as a draft.<br />
+            Verify numbers before acting.
+          </p>
+        </div>
+        <div class="mini dont">
+          <h3>Don’t</h3>
+          <p>
+            Don’t paste confidential package/customer/employee data.<br />
+            Don’t auto-send customer email from AI.<br />
+            Don’t treat AI as the system of record.<br />
+            Don’t skip human review.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="agents">
+      <h2>Gemini agents (coming / pilot)</h2>
+      <div class="grid-2">
+        <div class="mini">
+          <h3>Shift Brief Coach</h3>
+          <p>Briefs, handoffs, closeouts from scrubbed notes.</p>
+        </div>
+        <div class="mini">
+          <h3>Safety Huddle Coach</h3>
+          <p>2-minute safety scripts. No incident gossip.</p>
+        </div>
+        <div class="mini">
+          <h3>Metrics Explainer</h3>
+          <p>Numbers in plain English. Hypotheses only.</p>
+        </div>
+        <div class="mini">
+          <h3>How to open</h3>
+          <p>When published in your tenant, paste Gemini links here. Until then, use the starter prompts above.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="feedback">
+      <h2>Quick feedback (reply in Teams)</h2>
+      <p style="margin:0;color:var(--muted);">
+        After you try a prompt, reply with:<br />
+        1) Prompt ID · 2) Minutes saved · 3) What you fixed · 4) Anything invented?
+      </p>
+    </section>
+
+    <footer class="footer">
+      Not an official FedEx product or policy.<br />
+      Source of truth:
+      <a href="https://github.com/arigatoexpress/Ops-AI-Library" target="_blank" rel="noopener">github.com/arigatoexpress/Ops-AI-Library</a>
+      · Owner: [Your name/role] · Last reviewed: 2026-08-06<br />
+      Use this file as a SharePoint/Teams page template (upload + Website tab, or copy sections into a SharePoint page).
+    </footer>
+  </div>
+
+<script>
+document.querySelectorAll("[data-copy]").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const id = btn.getAttribute("data-copy");
+    const text = document.getElementById("text-" + id).innerText;
+    const status = document.getElementById("status-" + id);
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = "Copied";
+      btn.classList.add("copied");
+      status.hidden = false;
+      status.textContent = "Copied. Paste into Gemini Enterprise, then edit the draft before sharing.";
+      setTimeout(() => {
+        btn.textContent = "Copy prompt";
+        btn.classList.remove("copied");
+      }, 2000);
+    } catch (e) {
+      const range = document.createRange();
+      range.selectNodeContents(document.getElementById("text-" + id));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      status.hidden = false;
+      status.textContent = "Select-all applied — press Ctrl/Cmd+C to copy.";
+    }
+  });
+});
+</script>
+</body>
+</html>
