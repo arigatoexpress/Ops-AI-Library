@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ops AI Library</title>
+<meta name="description" content="Prompt library for FedEx Operations Managers. AI drafts. You decide." />
+<style>
+:root {
+  --bg: #0b1220; --panel: #121a2b; --border: #2a3650; --text: #eef3fb;
+  --muted: #9aabbc; --accent: #4f8cff; --accent2: #3dd6c6; --warn: #f0b429;
+  --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: var(--font); color: var(--text); min-height: 100vh;
+  background:
+    radial-gradient(1000px 500px at 10% -10%, #1a2f55 0%, transparent 55%),
+    radial-gradient(800px 400px at 100% 0%, #0f3a35 0%, transparent 50%),
+    var(--bg);
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 40px 20px 60px; }
+.badge {
+  display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--accent2);
+  border: 1px solid rgba(61,214,198,0.35); background: rgba(61,214,198,0.1);
+  border-radius: 999px; padding: 4px 10px; margin-bottom: 16px;
+}
+h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 0 0 10px; line-height: 1.15; }
+.lead { font-size: 1.1rem; color: var(--muted); max-width: 40rem; line-height: 1.5; margin: 0 0 24px; }
+.rule {
+  background: linear-gradient(90deg, rgba(240,180,41,0.12), rgba(255,107,107,0.08));
+  border: 1px solid rgba(240,180,41,0.35); color: #ffe6a8;
+  border-radius: 14px; padding: 14px 16px; margin-bottom: 28px; font-size: 0.95rem;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.card {
+  display: block; text-decoration: none; color: inherit;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 16px; transition: border-color 0.15s, transform 0.15s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.card.primary { border-color: rgba(79,140,255,0.55); background: linear-gradient(160deg, #15233d, #121a2b); }
+.card h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.card p { margin: 0; color: var(--muted); font-size: 0.9rem; line-height: 1.4; }
+.card .cta { margin-top: 12px; color: var(--accent); font-weight: 700; font-size: 0.88rem; }
+.section { margin-top: 36px; }
+.section h3 { margin: 0 0 12px; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+footer { margin-top: 40px; color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="badge">Ops AI Library · v1.3</div>
+    <h1>AI drafts. You decide.</h1>
+    <p class="lead">
+      Copy-paste prompts and Gemini agent guides for FedEx Operations Managers —
+      built for busy people who are not technical.
+    </p>
+    <div class="rule">
+      <strong>Safe use:</strong> Never paste tracking numbers, customer names, employee records,
+      routes, GPS, signatures, or passwords into unapproved tools.
+    </div>
+
+    <div class="grid">
+      <a class="card primary" href="prompts/explorer.html">
+        <h2>Prompt Explorer</h2>
+        <p>Search 45 prompts, fill brackets, sensitivity scan, copy into Gemini.</p>
+        <div class="cta">Open explorer →</div>
+      </a>
+      <a class="card" href="docs/getting-started-for-managers.md">
+        <h2>Getting started</h2>
+        <p>15-minute path for new managers. First-week prompt set included.</p>
+        <div class="cta">Start here →</div>
+      </a>
+      <a class="card" href="docs/manager-wallet-card.md">
+        <h2>Wallet card</h2>
+        <p>Printable rules and which prompt to use when.</p>
+        <div class="cta">Print →</div>
+      </a>
+      <a class="card" href="demos/README.md">
+        <h2>Live demos</h2>
+        <p>Synthetic paste packs for meetings and workshops.</p>
+        <div class="cta">Demo pack →</div>
+      </a>
+    </div>
+
+    <div class="section">
+      <h3>For builders & leadership</h3>
+      <div class="grid">
+        <a class="card" href="docs/meeting-one-pager.md"><h2>Meeting one-pager</h2><p>Decisions, demo script, 90-day headline.</p><div class="cta">Open →</div></a>
+        <a class="card" href="gemini-agents/README.md"><h2>Gemini agents</h2><p>Web UI setup + soul.md personas.</p><div class="cta">Open →</div></a>
+        <a class="card" href="playbooks/sharepoint-power-automate.md"><h2>SharePoint / Power Automate</h2><p>Playbook for when access lands.</p><div class="cta">Open →</div></a>
+        <a class="card" href="playbooks/gcp-sandbox.md"><h2>GCP sandbox</h2><p>Data engineer day-one plan.</p><div class="cta">Open →</div></a>
+        <a class="card" href="governance/safe-use-rules.md"><h2>Safe use rules</h2><p>Plain-English guardrails.</p><div class="cta">Open →</div></a>
+        <a class="card" href="docs/faq.md"><h2>FAQ</h2><p>Managers, leadership, builders.</p><div class="cta">Open →</div></a>
+      </div>
+    </div>
+
+    <footer>
+      Not an official FedEx product or policy.<br />
+      Source of truth:
+      <a href="https://github.com/arigatoexpress/Ops-AI-Library">github.com/arigatoexpress/Ops-AI-Library</a>
+      · Open this folder offline; Prompt Explorer works without internet.
+    </footer>
+  </div>
+</body>
+</html>

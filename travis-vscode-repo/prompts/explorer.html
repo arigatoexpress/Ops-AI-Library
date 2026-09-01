@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ops AI Library — Prompt Explorer</title>
+<meta name="description" content="Offline prompt browser for FedEx Operations Managers. AI drafts. You decide." />
+<style>
+:root{
+  --bg:#0b1220;--panel:#121a2b;--panel2:#1a2438;--border:#2a3650;
+  --text:#eef3fb;--muted:#9aabbc;--accent:#4f8cff;--accent2:#3dd6c6;
+  --warn:#f0b429;--danger:#ff6b6b;--ok:#3ecf8e;--radius:14px;
+  --font:"Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);color:var(--text);min-height:100vh;
+background:
+radial-gradient(1000px 500px at 0% -10%,#1a2f55 0%,transparent 55%),
+radial-gradient(800px 400px at 100% 0%,#0f3a35 0%,transparent 50%),
+var(--bg)}
+header{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);
+background:rgba(11,18,32,.9);border-bottom:1px solid var(--border);padding:12px 16px}
+.top{max-width:1240px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+h1{font-size:1.08rem;margin:0;font-weight:750}
+h1 span{color:var(--accent2);font-weight:650}
+.tagline{color:var(--muted);font-size:.84rem;margin-top:2px}
+.hdr-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:650;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+.btn-danger{background:rgba(255,107,107,.15);color:#ffc9c9;border:1px solid rgba(255,107,107,.4)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.banner{max-width:1240px;margin:12px auto 0;padding:0 16px}
+.banner-inner{background:linear-gradient(90deg,rgba(240,180,41,.12),rgba(255,107,107,.08));
+border:1px solid rgba(240,180,41,.35);color:#ffe6a8;border-radius:var(--radius);padding:10px 14px;font-size:.9rem}
+.layout{max-width:1240px;margin:0 auto;padding:16px;display:grid;grid-template-columns:340px 1fr;gap:16px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-width:0}
+.panel-h{padding:12px 14px;border-bottom:1px solid var(--border);background:var(--panel2);
+font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;
+display:flex;justify-content:space-between;align-items:center}
+.search-wrap{padding:12px;border-bottom:1px solid var(--border)}
+.filters{display:grid;gap:8px}
+input[type=search],select,textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);
+border-radius:10px;padding:10px 12px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+.list{max-height:calc(100vh - 280px);overflow:auto}
+@media(max-width:900px){.list{max-height:38vh}}
+.item{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--border);
+color:var(--text);padding:12px 14px;cursor:pointer;font:inherit}
+.item:hover,.item.active{background:rgba(79,140,255,.12)}
+.item .id{color:var(--accent2);font-size:.72rem;font-weight:800}
+.item .t{display:block;margin-top:2px;font-weight:650;font-size:.92rem}
+.item .m{color:var(--muted);font-size:.76rem;margin-top:4px}
+.badge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:999px;
+background:rgba(61,214,198,.15);color:var(--accent2);border:1px solid rgba(61,214,198,.35);margin-left:6px}
+.detail{padding:16px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.chip{font-size:.75rem;padding:4px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);color:var(--muted)}
+.chip.accent{color:#cfe0ff;border-color:rgba(79,140,255,.5)}
+.chip.ok{color:#b9f5d5;border-color:rgba(62,207,142,.45)}
+.chip.warn{color:#ffe6a8;border-color:rgba(240,180,41,.45)}
+.tip{background:rgba(79,140,255,.1);border:1px solid rgba(79,140,255,.28);border-radius:10px;padding:10px 12px;font-size:.88rem;margin-bottom:12px;color:#d7e6ff}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 12px}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr}}
+.step{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:.76rem;color:var(--muted)}
+.step b{display:block;color:var(--text);margin-bottom:2px}
+textarea#promptText{min-height:300px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.86rem;line-height:1.45;resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.status{min-height:1.25em;margin-top:10px;font-size:.86rem}
+.status.ok{color:var(--ok)}.status.warn{color:var(--warn)}.status.err{color:var(--danger)}
+.scan{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:.86rem;display:none}
+.scan.show{display:block}
+.scan.clean{background:rgba(62,207,142,.1);border:1px solid rgba(62,207,142,.35);color:#b9f5d5}
+.scan.dirty{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.4);color:#ffc9c9}
+.ph{margin-top:12px}
+.ph h3{margin:0 0 8px;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.ph-grid{display:grid;gap:8px}
+.ph-row{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;align-items:center}
+@media(max-width:600px){.ph-row{grid-template-columns:1fr}}
+.ph-row label{font-size:.8rem;color:var(--muted);word-break:break-word}
+.ph-row input{padding:8px 10px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);font:inherit}
+.empty{color:var(--muted);padding:24px}
+footer{max-width:1240px;margin:0 auto;padding:8px 16px 28px;color:var(--muted);font-size:.8rem}
+kbd{font:inherit;font-size:.75rem;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:1px 6px;color:var(--text)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div>
+      <h1>Ops AI Library <span>· Prompt Explorer</span></h1>
+      <div class="tagline">Offline · nothing leaves this browser tab · AI drafts, you decide</div>
+    </div>
+    <div class="hdr-actions">
+      <span class="tagline" id="countLabel"></span>
+      <button type="button" class="btn btn-secondary" id="btnSafe">Safe use</button>
+    </div>
+  </div>
+</header>
+<div class="banner"><div class="banner-inner" id="safeBanner">
+  <strong>Safe use:</strong> Never paste tracking numbers, customer names, employee records, routes, GPS, signatures, or passwords into unapproved tools. Every output is a draft for human review.
+</div></div>
+<main class="layout">
+  <aside class="panel">
+    <div class="panel-h"><span>Find a prompt</span><span id="listCount"></span></div>
+    <div class="search-wrap filters">
+      <input id="q" type="search" placeholder="Search (brief, safety, metrics…)" autocomplete="off" />
+      <select id="cat"><option value="">All categories</option></select>
+      <select id="week">
+        <option value="">All prompts</option>
+        <option value="first" selected>First-week set only</option>
+      </select>
+      <select id="agent"><option value="">All agents</option></select>
+    </div>
+    <div class="list" id="list"></div>
+  </aside>
+  <section class="panel">
+    <div class="panel-h"><span>Prompt workspace</span><span><kbd>↑</kbd><kbd>↓</kbd> navigate · <kbd>Ctrl</kbd>+<kbd>Enter</kbd> copy</span></div>
+    <div class="detail" id="detail"><div class="empty">Select a prompt on the left.</div></div>
+  </section>
+</main>
+<footer>
+  Ops AI Library v1.3 · Not an official FedEx product · <span id="genLabel"></span> ·
+  Rebuild: <code>node scripts/build-prompt-index.mjs</code>
+</footer>
+<script>
+const DATA = {"generated":"2026-08-06","version":"1.3","count":45,"rule":"AI drafts. You decide. Never paste tracking numbers, customer names, employee records, routes, or credentials into unapproved tools.","prompts":[{"id":"P00","title":"Manager template (blank)","category":"How to write prompts","file":"00-how-to-write-prompts.md","minutes":3,"text":"Act as a practical FEC supervisor or manager.\n\nI need help with:\n[task]\n\nAudience:\n[who will read this]\n\nSource material (scrubbed — no real tracking, customer, or employee data):\n[paste notes]\n\nRules:\n- Use only the source material.\n- Do not invent facts.\n- Keep it concise.\n- Flag uncertainty under \"Needs verification.\"\n- Do not include sensitive data in the answer.\n\nOutput format:\n[bullets / table / email / checklist / one-page brief]","placeholders":["[task]","[who will read this]","[paste notes]","[bullets / table / email / checklist / one-page brief]"],"agent":null,"firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P01","title":"Daily Manager Brief","category":"Daily operations","file":"daily-operations.md","minutes":5,"text":"Act as a FedEx FEC supervisor or manager preparing a concise daily brief for your station or hub.\n\nContext (scrubbed — no real names, addresses, tracking numbers, or sensitive package counts):\n[Paste non-sensitive shift notes, volume ranges, staffing notes, weather summary,\nequipment notes, and known constraints.]\n\nCreate a daily brief with:\n- Top 5 priorities for this shift\n- Risks to watch (weather, road, equipment, staffing)\n- Sort hub / P&D / linehaul coordination notes\n- Decisions needed and who should make them (roles, not personal names)\n- Owner and next step for each item\n\nRules:\n- Do not invent facts.\n- Put unclear items under \"Needs verification.\"\n- Keep it under 300 words.\n- Include a safety reminder.\n- Label the whole output as a draft for manager review.","placeholders":["[Paste non-sensitive shift notes, volume ranges, staffing notes, weather summary,\nequipment notes, and known constraints.]"],"agent":"Shift Brief Coach","firstWeek":true,"tip":"Best first prompt. Scrub notes, then edit owners before sending."},{"id":"P02","title":"Shift Handoff","category":"Daily operations","file":"daily-operations.md","minutes":5,"text":"Turn these non-sensitive notes into a shift handoff for the incoming supervisor or manager.\n\nOutgoing shift: [Day/Evening/Night]\nIncoming shift: [Day/Evening/Night]\nTone: direct, calm, and action-oriented\n\nNotes (scrubbed):\n[Paste notes. Remove all real names, addresses, tracking numbers, and package details.]\n\nReturn:\n1. What changed since the last handoff\n2. What is still open\n3. High-risk items (safety, customer, linehaul)\n4. Who owns each next step (roles, not names)\n5. What to check first in the next shift\n6. One safety reminder\n\nDo not invent facts. Use \"Needs verification\" where details are missing.","placeholders":["[Day/Evening/Night]","[Paste notes. Remove all real names, addresses, tracking numbers, and package details.]"],"agent":"Shift Brief Coach","firstWeek":true,"tip":"Use at end of shift. Roles only — no personal performance notes."},{"id":"P03","title":"Escalation Summary","category":"Daily operations","file":"daily-operations.md","minutes":5,"text":"Summarize this issue for an escalation to senior management or a support team.\n\nIssue notes (scrubbed):\n[Paste scrubbed notes. No real customer names, addresses, tracking numbers, or employee details.]\n\nReturn:\n- Situation in 2 sentences\n- Operational impact on station/hub flow\n- Timeline\n- Actions already taken\n- Decision or help needed\n- What information is missing\n\nUse neutral language. Do not blame people. Flag assumptions.\nThis is a draft for human review before sending.","placeholders":["[Paste scrubbed notes. No real customer names, addresses, tracking numbers, or employee details.]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P04","title":"After-Action Review","category":"Daily operations","file":"daily-operations.md","minutes":8,"text":"Create an after-action review from these non-sensitive notes.\n\nEvent:\n[Describe the event in general terms.]\n\nNotes (scrubbed):\n[Paste notes.]\n\nReturn:\n- What happened (confirmed facts only)\n- What went well\n- What slowed us down\n- Root causes to investigate\n- Corrective actions with owners (roles)\n- Follow-up date\n\nSeparate confirmed facts from theories. No real employee names or incident IDs.","placeholders":["[Describe the event in general terms.]","[Paste notes.]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P05","title":"Pre-Sort Stand-Up Brief","category":"Daily operations","file":"daily-operations.md","minutes":3,"text":"Draft a 2-minute stand-up brief for a sort hub team before the sort starts.\n\nShift: [Twilight / Night / Day]\nGeneral volume context: [e.g., \"typical Tuesday\", \"post-holiday\", \"peak surge\"]\nEquipment status (general): [e.g., all belts operational, chute 3 down for repair]\nKnown constraints: [e.g., late feeder arrival expected, overflow lot in use]\n\nReturn:\n- 1 safety focus for this sort\n- 1 throughput goal or expectation (general)\n- 1 coordination note (P&D, linehaul, or QA)\n- 1 \"watch for\" item\n- Closing: \"Safety Above All. Questions?\"\n\nUnder 150 words. No real names, sensitive package counts, or facility security details.","placeholders":["[Twilight / Night / Day]","[e.g., \"typical Tuesday\", \"post-holiday\", \"peak surge\"]","[e.g., all belts operational, chute 3 down for repair]","[e.g., late feeder arrival expected, overflow lot in use]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P06","title":"End-of-Shift Closeout Checklist","category":"Daily operations","file":"daily-operations.md","minutes":5,"text":"Create an end-of-shift closeout checklist for a FedEx FEC supervisor or manager.\n\nShift: [Day/Evening/Night]\nOperation type: [Station / Sort Hub / P&D / Linehaul]\n\nReturn a checklist with:\n- Package holds and exceptions (general process check)\n- Misload or damage reporting status\n- Equipment inspection and handoff notes\n- Communication to next shift (what they need to know)\n- Safety incident or near-miss documentation\n- Facility security check (general reminders only)\n\nEach item should have a checkbox and a notes line.\nFooter: \"Verify all items with internal systems. This checklist is a draft template.\"","placeholders":["[Day/Evening/Night]","[Station / Sort Hub / P&D / Linehaul]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P07","title":"Volume Anomaly Quick Check","category":"Daily operations","file":"daily-operations.md","minutes":5,"text":"Help me think through a volume anomaly at my station or hub.\n\nGeneral context: [e.g., \"higher than typical Tuesday\", \"unexpected drop in outbound\"]\nPossible factors: [e.g., weather, local event, system issue, carrier delay]\n\nReturn:\n- 3 most likely causes to investigate\n- 2 quick checks (what to verify first)\n- 1 communication needed (who to notify, in general role terms)\n- 1 safety implication\n- End with: \"This is an analysis draft. Confirm all facts with internal systems.\"\n\nNo real package counts, customer names, or route details.","placeholders":["[e.g., \"higher than typical Tuesday\", \"unexpected drop in outbound\"]","[e.g., weather, local event, system issue, carrier delay]"],"agent":"Metrics Explainer","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P08","title":"Pre-Shift Safety Huddle Brief","category":"Safety & compliance","file":"safety-and-compliance.md","minutes":3,"text":"Act as a safety-focused FEC supervisor or manager preparing a 2-minute huddle brief.\n\nStation: [Station name or code — if non-sensitive]\nShift: [Day/Evening/Night]\nSeason/Conditions: [e.g., winter ice, summer heat, rain]\nKnown equipment status: [e.g., all scanners functional, 2 dollies out for repair]\n\nReturn:\n- 1 safety focus for this shift\n- 1 quick check everyone should do before starting\n- 1 reminder about PPE or equipment inspection\n- 1 \"see something, say something\" prompt\n- End with: \"Safety Above All. Questions before we start?\"\n\nKeep it under 150 words. Direct, respectful language.\nDo not include real employee names or past incident details.","placeholders":["[Station name or code — if non-sensitive]","[Day/Evening/Night]","[e.g., winter ice, summer heat, rain]","[e.g., all scanners functional, 2 dollies out for repair]"],"agent":"Safety Huddle Coach","firstWeek":true,"tip":"Under 150 words. End with Safety Above All."},{"id":"P09","title":"Near-Miss Report Draft","category":"Safety & compliance","file":"safety-and-compliance.md","minutes":8,"text":"Help me draft a near-miss report from scrubbed notes.\nNo real names, no exact identifiable dates, no injury details.\n\nWhat happened (scrubbed):\n[Describe the near-miss in general terms]\n\nImmediate action taken:\n[General description]\n\nReturn a draft with:\n- Category (slip/trip/fall, equipment contact, vehicle, ergonomic, other)\n- General description of what occurred\n- Contributing factors to consider\n- Corrective actions to recommend\n- Follow-up owner (role) and timeline\n- Note: \"This is a draft for review. Official reporting must follow FedEx safety procedures.\"\n\nNeutral, blame-free language. Flag anything that needs verification.","placeholders":["[Describe the near-miss in general terms]","[General description]"],"agent":"Safety Huddle Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P10","title":"Safety Meeting Agenda","category":"Safety & compliance","file":"safety-and-compliance.md","minutes":5,"text":"Create a safety meeting agenda for an operations team.\n\nStation/Hub: [Name]\nFrequency: [Weekly / Monthly / Post-incident review]\nRecent themes (scrubbed): [e.g., loading dock awareness, scanner strap usage]\n\nReturn:\n- Meeting objective (1 sentence)\n- 3 discussion topics (5 minutes each)\n- 1 interactive element (quiz, scenario, or demonstration)\n- Action item template with owner and due date\n- Closing reminder about reporting channels\n\nKeep total meeting time under 30 minutes.","placeholders":["[Name]","[Weekly / Monthly / Post-incident review]","[e.g., loading dock awareness, scanner strap usage]"],"agent":"Safety Huddle Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P11","title":"Seasonal Safety Alert Draft","category":"Safety & compliance","file":"safety-and-compliance.md","minutes":5,"text":"Draft a seasonal safety alert for operations team members.\n\nSeason/Hazard: [e.g., winter ice, summer heat index, high wind]\nAffected areas: [General region, not specific security-sensitive facility details]\nDuration: [General timeframe]\n\nReturn:\n- Hazard summary (2 sentences)\n- 3 specific precautions\n- 1 \"red flag\" symptom or condition to watch for\n- What to do if conditions worsen\n- Reminder to check official internal safety updates (do not rely on this draft alone)\n\nTone: calm, authoritative, caring. Under 200 words.","placeholders":["[e.g., winter ice, summer heat index, high wind]","[General region, not specific security-sensitive facility details]","[General timeframe]"],"agent":"Safety Huddle Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P12","title":"Post-Incident Team Note (Manager-to-Team)","category":"Safety & compliance","file":"safety-and-compliance.md","minutes":5,"text":"Draft a brief team communication after a safety incident.\nNo real names, no exact times, no medical details.\n\nGeneral context: [e.g., loading dock, P&D vehicle, sort aisle]\nKey reminder: [e.g., stay alert near moving equipment, use three points of contact]\n\nReturn:\n- Acknowledgment that safety is the top priority\n- General reminder about the relevant procedure\n- Encouragement to report hazards immediately\n- Reference to official internal safety resources\n- Closing that reinforces team care\n\nHuman, not corporate-robot. Under 150 words.\nHuman review required before sending.","placeholders":["[e.g., loading dock, P&D vehicle, sort aisle]","[e.g., stay alert near moving equipment, use three points of contact]"],"agent":"Safety Huddle Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P13","title":"Safety Metrics Discussion Summary","category":"Safety & compliance","file":"safety-and-compliance.md","minutes":8,"text":"Summarize safety metrics for an operations discussion.\nUse only synthetic or already-approved aggregate data. No real employee names or incident IDs.\n\nPeriod: [Month/Quarter]\nGeneral trends: [e.g., slip incidents up slightly, vehicle incidents stable]\nFocus areas: [e.g., dock operations, P&D backing procedures]\n\nReturn:\n- 3 trends in plain English\n- 1 area showing improvement\n- 1 area needing attention\n- 2 concrete actions with owners (roles)\n- 1 metric to track next month\n\nSeparate confirmed facts from estimates. Flag verification needs.","placeholders":["[Month/Quarter]","[e.g., slip incidents up slightly, vehicle incidents stable]","[e.g., dock operations, P&D backing procedures]"],"agent":"Safety Huddle Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P14","title":"Meeting Agenda","category":"Meetings & communication","file":"meeting-and-communication.md","minutes":5,"text":"Create a focused meeting agenda.\n\nMeeting purpose:\n[State purpose.]\n\nAudience:\n[List roles, not personal names if sensitive.]\n\nContext:\n[Paste non-sensitive background.]\n\nReturn:\n- Objective\n- Pre-read needed\n- Agenda with time boxes\n- Decisions needed\n- Follow-up owner template\n\nKeep it realistic for busy operations leaders.","placeholders":["[State purpose.]","[List roles, not personal names if sensitive.]","[Paste non-sensitive background.]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P15","title":"Meeting Notes To Action Items","category":"Meetings & communication","file":"meeting-and-communication.md","minutes":5,"text":"Convert these meeting notes into action items.\n\nNotes (scrubbed):\n[Paste non-sensitive notes.]\n\nReturn a table:\nOwner (role) | Action | Due date | Dependency | Risk if missed\n\nIf owner or due date is missing, write \"Needs assignment\" or \"Needs date.\"\nDo not invent owners or deadlines.","placeholders":["[Paste non-sensitive notes.]"],"agent":"Meeting Scribe","firstWeek":true,"tip":"Never invent owners or due dates — use Needs assignment."},{"id":"P16","title":"Professional Email Draft","category":"Meetings & communication","file":"meeting-and-communication.md","minutes":5,"text":"Draft a professional email from these notes.\n\nAudience:\n[Who is receiving it?]\n\nPurpose:\n[What should happen after they read it?]\n\nNotes (scrubbed):\n[Paste non-sensitive notes.]\n\nTone:\nClear, respectful, direct.\n\nRules:\n- Keep it under 200 words unless more detail is necessary.\n- Do not add commitments that are not in the notes.\n- End with a clear ask or next step.\n- Mark this as a draft for human review before sending.","placeholders":["[Who is receiving it?]","[What should happen after they read it?]","[Paste non-sensitive notes.]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P17","title":"Executive Update","category":"Meetings & communication","file":"meeting-and-communication.md","minutes":5,"text":"Create an executive-ready update.\n\nContext (scrubbed):\n[Paste scrubbed context.]\n\nReturn:\n- Headline\n- Why it matters\n- Current status\n- Risks\n- Decisions needed\n- Next 7 days\n\nKeep it brief. Avoid unnecessary jargon.\nDo not invent numbers or timelines.","placeholders":["[Paste scrubbed context.]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P18","title":"Team Announcement","category":"Meetings & communication","file":"meeting-and-communication.md","minutes":5,"text":"Draft a short team announcement.\n\nTopic:\n[e.g., process change, recognition, schedule note]\n\nKey facts (scrubbed):\n[List only confirmed facts.]\n\nReturn:\n- Subject line options (3)\n- Body under 120 words\n- What people should do next\n- Who to contact with questions (role)\n\nDo not invent benefits or dates. Use \"Needs verification\" if a fact is unclear.","placeholders":["[e.g., process change, recognition, schedule note]","[List only confirmed facts.]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P19","title":"Report Summary","category":"Data & reporting","file":"data-and-reporting.md","minutes":5,"text":"Summarize this report for an FEC supervisor or manager.\n\nReport text or non-sensitive extract:\n[Paste text.]\n\nReturn:\n- 5 key takeaways\n- What changed from the prior period, if known\n- Risks\n- Recommended questions (not final decisions)\n- Questions to ask the data owner\n\nDo not invent trends that are not visible in the text.","placeholders":["[Paste text.]"],"agent":"Metrics Explainer","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P20","title":"Metrics Interpretation","category":"Data & reporting","file":"data-and-reporting.md","minutes":8,"text":"Help interpret these metrics.\n\nMetrics:\n[Paste non-sensitive metric names and values.]\n\nContext:\n[Describe time period and operation in general terms.]\n\nReturn:\n- What looks normal\n- What looks unusual\n- Possible explanations (labeled as hypotheses)\n- Follow-up data needed\n- Actions that are safe now (information-gathering only)\n- Actions that should wait for confirmation\n\nDo not invent missing values. Mark gaps \"Needs verification.\"","placeholders":["[Paste non-sensitive metric names and values.]","[Describe time period and operation in general terms.]"],"agent":"Metrics Explainer","firstWeek":true,"tip":"Hypotheses only — no causal claims without evidence."},{"id":"P21","title":"Data Request Draft","category":"Data & reporting","file":"data-and-reporting.md","minutes":5,"text":"Draft a clear data request for an analyst or data partner.\n\nBusiness question:\n[What are we trying to answer?]\n\nDecision it supports:\n[What decision depends on this?]\n\nReturn:\n- Requested fields (categories, not real values)\n- Time period\n- Filters\n- Granularity\n- Privacy / sensitivity concerns\n- Why each field is needed\n- Suggested summary output format","placeholders":["[What are we trying to answer?]","[What decision depends on this?]"],"agent":"Metrics Explainer","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P22","title":"Dashboard Feedback","category":"Data & reporting","file":"data-and-reporting.md","minutes":8,"text":"Review this dashboard description for manager usefulness.\n\nDashboard description:\n[Paste description or field list.]\n\nReturn:\n- What decisions it supports\n- What is confusing\n- Missing filters or context\n- Metrics that need definitions\n- Suggested layout improvements\n- Risks of misinterpretation","placeholders":["[Paste description or field list.]"],"agent":"Metrics Explainer","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P23","title":"Explain This Number For A Non-Technical Audience","category":"Data & reporting","file":"data-and-reporting.md","minutes":3,"text":"Explain this metric in plain English for someone new to the report.\n\nMetric name: [name]\nValue: [value]\nPeriod: [period]\nTarget or comparison (if any): [target]\n\nReturn:\n- One-sentence definition\n- Why operations cares\n- What a good vs concerning movement looks like (general)\n- Two questions a manager should ask before acting\n- Reminder to verify against the source system\n\nDo not invent history that was not provided.","placeholders":["[name]","[value]","[period]","[target]"],"agent":"Metrics Explainer","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P24","title":"Process Map From Notes","category":"Process improvement","file":"process-improvement.md","minutes":10,"text":"Act as a process improvement facilitator.\n\nCurrent process notes (scrubbed):\n[Paste non-sensitive notes.]\n\nCreate:\n- Current process steps\n- Pain points\n- Duplicate work\n- Wait states\n- Failure points\n- Suggested improvements\n- Metrics to track\n\nDo not assume missing steps. Mark them as questions.","placeholders":["[Paste non-sensitive notes.]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P25","title":"Root Cause Brainstorm","category":"Process improvement","file":"process-improvement.md","minutes":10,"text":"Help me think through root causes.\n\nProblem:\n[Describe problem without sensitive data.]\n\nObserved facts:\n[List facts only.]\n\nReturn:\n- Likely causes\n- Evidence needed for each cause\n- Quick checks\n- Longer-term fixes\n- Risks of acting too soon\n\nDo not pick one root cause unless the facts clearly support it.","placeholders":["[Describe problem without sensitive data.]","[List facts only.]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P26","title":"Pilot Design","category":"Process improvement","file":"process-improvement.md","minutes":10,"text":"Design a small AI pilot for this operations problem.\n\nProblem:\n[Describe problem.]\n\nUsers:\n[Describe roles.]\n\nData available:\n[Describe data type / classification, not sensitive values.]\n\nReturn:\n- Pilot goal\n- Users\n- Inputs\n- Output\n- Human review step\n- Success metrics\n- Data risks\n- What governance should review\n- 2-week test plan","placeholders":["[Describe problem.]","[Describe roles.]","[Describe data type / classification, not sensitive values.]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P27","title":"Standard Work Draft","category":"Process improvement","file":"process-improvement.md","minutes":10,"text":"Turn these process notes into a standard work draft.\n\nNotes (scrubbed):\n[Paste scrubbed notes.]\n\nReturn:\n- Purpose\n- Scope\n- Step-by-step procedure\n- Quality checks\n- Escalation triggers\n- Common mistakes\n- Training notes\n\nKeep language simple enough for a new manager to use.\nLabel as draft until process owner approves.","placeholders":["[Paste scrubbed notes.]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P28","title":"Pre-Peak Readiness Brief","category":"Peak season & surge","file":"peak-season-and-surge.md","minutes":10,"text":"Create a pre-peak readiness brief for a station or hub manager.\n\nOperation type: [Station / Sort Hub / P&D / mixed]\nPeak window: [general dates]\nKnown constraints (scrubbed): [equipment, space, training, contractor capacity — general]\nLessons from last peak (scrubbed): [what slowed us down]\n\nReturn:\n- Top 5 readiness priorities\n- Top 5 risks with early warning signs\n- Daily rhythm recommendations (plan / midday check / closeout)\n- Cross-team coordination notes (sort, P&D, linehaul, quality)\n- Open questions needing verification\n- Safety focus for peak conditions\n\nUnder 400 words. Draft for human review.","placeholders":["[Station / Sort Hub / P&D / mixed]","[general dates]","[equipment, space, training, contractor capacity — general]","[what slowed us down]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P29","title":"Surge Day Checklist","category":"Peak season & surge","file":"peak-season-and-surge.md","minutes":8,"text":"Build a surge-day checklist for supervisors.\n\nSurge type: [volume spike / weather / network disruption / other]\nShift: [Day/Evening/Night]\n\nReturn checklists for:\n- Before shift\n- First 60 minutes\n- Mid-shift recovery\n- End-of-shift handoff\n\nEach item: checkbox + why it matters (one short phrase).\nInclude a safety line in every section.\nNo real names, rosters, or package identifiers.","placeholders":["[volume spike / weather / network disruption / other]","[Day/Evening/Night]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P30","title":"Staffing Scenario Discussion (Non-Sensitive)","category":"Peak season & surge","file":"peak-season-and-surge.md","minutes":10,"text":"Help structure a staffing scenario discussion using ranges only.\n\nScenario: [e.g., \"volume ~15% above typical Tuesday\"]\nAvailable capacity notes (ranges/roles only): [e.g., \"overtime available for package handlers; contractor vans constrained\"]\nConstraints: [training, equipment, space]\n\nReturn:\n- Options table: Option | Pros | Cons | Risks | Info still needed\n- What must be verified in official systems before any decision\n- What NOT to decide from this chat alone\n\nDo not invent headcount numbers. Do not recommend violating labor policy.","placeholders":["[e.g., \"volume ~15% above typical Tuesday\"]","[e.g., \"overtime available for package handlers; contractor vans constrained\"]","[training, equipment, space]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P31","title":"Post-Peak After-Action","category":"Peak season & surge","file":"peak-season-and-surge.md","minutes":10,"text":"Create a post-peak after-action outline from scrubbed notes.\n\nNotes:\n[Paste non-sensitive notes.]\n\nReturn:\n- What went well\n- What broke or slowed flow\n- Root causes to investigate\n- Fixes before next peak (quick wins vs longer projects)\n- Metrics to keep watching\n- Recognition notes (roles/teams, not sensitive individual performance data)\n\nSeparate facts from opinions.","placeholders":["[Paste non-sensitive notes.]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P32","title":"Feeder / Linehaul Delay Framing","category":"Linehaul & routing","file":"linehaul-and-routing.md","minutes":5,"text":"Help me frame a delay update for internal coordination.\n\nDelay type: [weather / traffic / equipment / network / other]\nGeneral impact: [e.g., \"inbound late; outbound may compress\"]\nWhat is already known (scrubbed):\n[notes]\n\nReturn:\n- Situation (2 sentences)\n- Operational impact (sort / P&D / customer risk — general)\n- Actions already taken\n- Decisions needed (roles)\n- Info still missing\n- Suggested next check-in time (if known)\n\nNeutral tone. No blame. Draft only.","placeholders":["[weather / traffic / equipment / network / other]","[e.g., \"inbound late; outbound may compress\"]","[notes]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P33","title":"Yard / Dock Coordination Notes","category":"Linehaul & routing","file":"linehaul-and-routing.md","minutes":5,"text":"Turn these scrubbed notes into a yard/dock coordination brief.\n\nNotes:\n[Paste non-sensitive notes about congestion, door availability, trailer status in general terms.]\n\nReturn:\n- Current state (bullets)\n- Bottlenecks\n- Prioritized actions (next 60–90 minutes)\n- Who needs to know (roles)\n- Safety watch-outs\n\nDo not invent door counts or trailer IDs.","placeholders":["[Paste non-sensitive notes about congestion, door availability, trailer status in general terms.]"],"agent":"Shift Brief Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P34","title":"Alternate Plan Discussion (Advisory)","category":"Linehaul & routing","file":"linehaul-and-routing.md","minutes":8,"text":"Help structure an alternate plan discussion. Advisory only — no dispatch authority.\n\nConstraint:\n[Describe constraint without sensitive identifiers.]\n\nOptions under consideration:\n[List option A/B/C in general terms.]\n\nReturn a comparison table:\nOption | Benefit | Risk | Dependencies | Verification needed\n\nRemind: final plan must follow approved dispatch and network procedures.","placeholders":["[Describe constraint without sensitive identifiers.]","[List option A/B/C in general terms.]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P35","title":"P&D Density / Coverage Conversation Starter","category":"Linehaul & routing","file":"linehaul-and-routing.md","minutes":8,"text":"Create talking points for a P&D density/coverage discussion using scrubbed context.\n\nContext:\n[General volume/shape notes — no addresses or stop lists]\n\nReturn:\n- 5 discussion questions for the team\n- 3 data points to pull from official systems before decisions\n- Common misinterpretations to avoid\n- Safety and customer-service considerations\n\nDo not generate routes or stop sequences.","placeholders":["[General volume/shape notes — no addresses or stop lists]"],"agent":"Process Coach","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P36","title":"Service Alert Draft (Internal First)","category":"Customer & contractor","file":"customer-and-contractor.md","minutes":8,"text":"Draft an internal service alert that a manager can adapt.\n\nSituation (scrubbed):\n[General service impact — no tracking numbers or customer names]\n\nReturn:\n- Internal summary (who needs to know)\n- Customer-facing draft (optional section) that makes no unverified promises\n- What must be verified before any external send\n- Escalation path questions\n\nTone: calm, factual. Under 200 words per section.","placeholders":["[General service impact — no tracking numbers or customer names]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P37","title":"Escalation Response Outline","category":"Customer & contractor","file":"customer-and-contractor.md","minutes":8,"text":"Outline a response to a service escalation using scrubbed notes.\n\nNotes:\n[No customer PII, no tracking numbers]\n\nReturn:\n- Empathy + ownership line (no admissions beyond known facts)\n- What we know / what we are checking\n- Next update timing (if known)\n- Internal actions (roles)\n- \"Do not say\" list (guesses, blame, unapproved compensation)\n\nHuman review required before any send.","placeholders":["[No customer PII, no tracking numbers]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P38","title":"ISP / Contractor Briefing Draft","category":"Customer & contractor","file":"customer-and-contractor.md","minutes":8,"text":"Create a briefing outline for an ISP or contractor touchpoint.\n\nTopics (scrubbed):\n[e.g., volume outlook ranges, safety focus, process change]\n\nReturn:\n- Agenda (15–20 minutes)\n- Key messages\n- Safety reminder\n- Questions to expect\n- Follow-ups with owners (roles)\n\nNo personal contractor data. No confidential network strategy.","placeholders":["[e.g., volume outlook ranges, safety focus, process change]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P39","title":"Team Recognition Note","category":"Customer & contractor","file":"customer-and-contractor.md","minutes":3,"text":"Draft a short recognition note for a team win.\n\nWin (scrubbed):\n[What went well — no sensitive metrics if restricted]\n\nReturn:\n- 3 subject line options\n- Body under 100 words\n- Specific behaviors recognized (not vague praise)\n- Safety or quality tie-in when relevant","placeholders":["[What went well — no sensitive metrics if restricted]"],"agent":"Meeting Scribe","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P40","title":"Use Case Intake","category":"Governance-safe use","file":"governance-safe-use.md","minutes":10,"text":"Help me turn this AI idea into a governance-ready use case.\n\nIdea:\n[Describe idea.]\n\nUsers:\n[Describe roles.]\n\nData:\n[Describe data category. Do not paste sensitive data.]\n\nReturn:\n- Problem statement\n- Proposed AI assistance\n- Human review step\n- Data classification questions\n- Risks\n- Success metrics\n- Approval needed before pilot\n- Smallest safe first test","placeholders":["[Describe idea.]","[Describe roles.]","[Describe data category. Do not paste sensitive data.]"],"agent":"Governance Gatekeeper","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P41","title":"Privacy Review Preparation","category":"Governance-safe use","file":"governance-safe-use.md","minutes":10,"text":"Prepare privacy review notes for this AI workflow.\n\nWorkflow:\n[Describe workflow.]\n\nData categories:\n[List categories, not real values.]\n\nReturn:\n- Data collected\n- Data not needed and should be excluded\n- Storage location questions\n- Access-control questions\n- Retention questions\n- User consent or notice questions\n- Recommended safer design","placeholders":["[Describe workflow.]","[List categories, not real values.]"],"agent":"Governance Gatekeeper","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P42","title":"Accuracy Review","category":"Governance-safe use","file":"governance-safe-use.md","minutes":8,"text":"Review this AI-generated draft for accuracy risk.\n\nDraft:\n[Paste draft.]\n\nSource notes:\n[Paste source notes.]\n\nReturn:\n- Claims supported by source\n- Claims not supported by source\n- Numbers, dates, or names to verify\n- Missing context\n- Safer revised wording","placeholders":["[Paste draft.]","[Paste source notes.]"],"agent":"Governance Gatekeeper","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P43","title":"External Sharing Check","category":"Governance-safe use","file":"governance-safe-use.md","minutes":5,"text":"Review this material before external sharing.\n\nMaterial:\n[Paste text.]\n\nCheck for:\n- Confidential or proprietary information\n- Customer or employee data\n- Unapproved claims\n- Overstated AI capability\n- Missing disclaimers\n- Tone and professionalism\n\nReturn a risk rating: Low, Medium, or High. Explain why.","placeholders":["[Paste text.]"],"agent":"Governance Gatekeeper","firstWeek":false,"tip":"Scrub sensitive data. Treat output as a draft."},{"id":"P44","title":"Is This Safe To Try?","category":"Governance-safe use","file":"governance-safe-use.md","minutes":5,"text":"I want to use AI for this task. Tell me if it is safe as described.\n\nTask:\n[Describe task.]\n\nTool I plan to use:\n[Gemini Enterprise / other approved tool / unknown]\n\nData I would provide:\n[Categories only]\n\nReturn:\n- Green / Yellow / Red rating\n- Why\n- Safer alternative if Red or Yellow\n- Minimum human review step\n- What approval I should seek before piloting","placeholders":["[Describe task.]","[Gemini Enterprise / other approved tool / unknown]","[Categories only]"],"agent":"Governance Gatekeeper","firstWeek":true,"tip":"Use before any new AI idea or automation request."}]};
+const FIRST_WEEK = new Set(['P01','P02','P08','P15','P20','P44']);
+const listEl = document.getElementById('list');
+const detailEl = document.getElementById('detail');
+const qEl = document.getElementById('q');
+const catEl = document.getElementById('cat');
+const weekEl = document.getElementById('week');
+const agentEl = document.getElementById('agent');
+const countLabel = document.getElementById('countLabel');
+const listCount = document.getElementById('listCount');
+const genLabel = document.getElementById('genLabel');
+let activeId = null;
+let viewIds = [];
+
+const cats = [...new Set(DATA.prompts.map(p => p.category))].sort();
+for (const c of cats) { const o=document.createElement('option'); o.value=c; o.textContent=c; catEl.appendChild(o); }
+const agents = [...new Set(DATA.prompts.map(p => p.agent).filter(Boolean))].sort();
+for (const a of agents) { const o=document.createElement('option'); o.value=a; o.textContent=a; agentEl.appendChild(o); }
+countLabel.textContent = DATA.count + ' prompts';
+genLabel.textContent = 'generated ' + (DATA.generated || '');
+
+document.getElementById('btnSafe').onclick = () => {
+  document.getElementById('safeBanner').scrollIntoView({behavior:'smooth', block:'center'});
+};
+
+function filtered() {
+  const q = qEl.value.trim().toLowerCase();
+  const cat = catEl.value;
+  const first = weekEl.value === 'first';
+  const agent = agentEl.value;
+  return DATA.prompts.filter(p => {
+    if (cat && p.category !== cat) return false;
+    if (first && !FIRST_WEEK.has(p.id) && !p.firstWeek) return false;
+    if (agent && p.agent !== agent) return false;
+    if (!q) return true;
+    const hay = (p.id + ' ' + p.title + ' ' + p.category + ' ' + (p.agent||'') + ' ' + p.text).toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function scanSensitive(text) {
+  const hits = [];
+  if (/\b\d{12,}\b/.test(text)) hits.push('long number (possible tracking/ID)');
+  if (/\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/.test(text)) hits.push('phone-like number');
+  if (/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(text)) hits.push('email address');
+  if (/\b(?:password|api[_-]?key|secret|token)\b/i.test(text)) hits.push('credential language');
+  if (/\b\d+\s+(?:st|street|ave|avenue|rd|road|blvd|lane|ln|dr|drive)\b/i.test(text)) hits.push('street address pattern');
+  if (/\b(?:ssn|social security)\b/i.test(text)) hits.push('SSN language');
+  return hits;
+}
+
+function renderList() {
+  const items = filtered();
+  viewIds = items.map(p => p.id);
+  listEl.innerHTML = '';
+  listCount.textContent = items.length + ' shown';
+  if (!items.length) { listEl.innerHTML = '<div class="empty">No matches.</div>'; return; }
+  for (const p of items) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'item' + (p.id === activeId ? ' active' : '');
+    btn.dataset.id = p.id;
+    const fw = (p.firstWeek || FIRST_WEEK.has(p.id)) ? '<span class="badge">First week</span>' : '';
+    btn.innerHTML = '<span class="id">' + p.id + fw + '</span><span class="t"></span><span class="m"></span>';
+    btn.querySelector('.t').textContent = p.title;
+    btn.querySelector('.m').textContent = p.category + (p.minutes ? ' · ~' + p.minutes + ' min' : '') + (p.agent ? ' · ' + p.agent : '');
+    btn.addEventListener('click', () => select(p.id));
+    listEl.appendChild(btn);
+  }
+}
+
+function select(id) {
+  activeId = id;
+  const p = DATA.prompts.find(x => x.id === id);
+  if (!p) return;
+  renderList();
+  detailEl.innerHTML = '';
+
+  const h = document.createElement('h2');
+  h.style.cssText = 'margin:0;font-size:1.28rem';
+  h.textContent = p.title;
+  detailEl.appendChild(h);
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.innerHTML =
+    '<span class="chip accent">' + p.id + '</span>' +
+    '<span class="chip">' + p.category + '</span>' +
+    (p.minutes ? '<span class="chip">~' + p.minutes + ' min</span>' : '') +
+    (p.firstWeek || FIRST_WEEK.has(p.id) ? '<span class="chip ok">First-week set</span>' : '') +
+    (p.agent ? '<span class="chip warn">Agent: ' + p.agent + '</span>' : '');
+  detailEl.appendChild(meta);
+
+  const tip = document.createElement('div');
+  tip.className = 'tip';
+  tip.textContent = 'Tip: ' + (p.tip || 'Scrub sensitive data. Treat output as a draft.');
+  detailEl.appendChild(tip);
+
+  const steps = document.createElement('div');
+  steps.className = 'steps';
+  steps.innerHTML =
+    '<div class="step"><b>1. Scrub</b>No tracking #s or PII</div>' +
+    '<div class="step"><b>2. Fill</b>Use placeholders below</div>' +
+    '<div class="step"><b>3. Copy</b>Paste into Gemini Enterprise</div>' +
+    '<div class="step"><b>4. Review</b>Edit before you share</div>';
+  detailEl.appendChild(steps);
+
+  // placeholder helpers
+  const phs = (p.placeholders || []).filter((x,i,a) => a.indexOf(x)===i).slice(0, 12);
+  const baseText = p.text;
+  let currentText = baseText;
+
+  if (phs.length) {
+    const ph = document.createElement('div');
+    ph.className = 'ph';
+    ph.innerHTML = '<h3>Fill brackets (optional)</h3>';
+    const grid = document.createElement('div');
+    grid.className = 'ph-grid';
+    const inputs = {};
+    for (const key of phs) {
+      const row = document.createElement('div');
+      row.className = 'ph-row';
+      const lab = document.createElement('label');
+      lab.textContent = key;
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.placeholder = 'your scrubbed value';
+      inputs[key] = inp;
+      inp.addEventListener('input', () => {
+        let t = baseText;
+        for (const k of phs) {
+          const v = (inputs[k].value || '').trim();
+          if (v) t = t.split(k).join(v);
+        }
+        currentText = t;
+        ta.value = t;
+        runScan();
+      });
+      row.appendChild(lab); row.appendChild(inp); grid.appendChild(row);
+    }
+    ph.appendChild(grid);
+    detailEl.appendChild(ph);
+  }
+
+  const ta = document.createElement('textarea');
+  ta.id = 'promptText';
+  ta.value = currentText;
+  ta.spellcheck = false;
+  detailEl.appendChild(ta);
+
+  const scan = document.createElement('div');
+  scan.className = 'scan';
+  scan.id = 'scanBox';
+  detailEl.appendChild(scan);
+
+  function runScan() {
+    const hits = scanSensitive(ta.value);
+    if (!hits.length) {
+      scan.className = 'scan show clean';
+      scan.textContent = 'Sensitivity scan: no common PII patterns detected in this text. Still review before pasting into any tool.';
+    } else {
+      scan.className = 'scan show dirty';
+      scan.innerHTML = '<strong>Sensitivity scan flagged:</strong> ' + hits.join('; ') + '. Scrub before using an AI tool.';
+    }
+    return hits;
+  }
+  ta.addEventListener('input', () => { currentText = ta.value; runScan(); });
+
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'btn btn-primary';
+  copyBtn.type = 'button';
+  copyBtn.textContent = 'Copy prompt';
+  const forceBtn = document.createElement('button');
+  forceBtn.className = 'btn btn-danger';
+  forceBtn.type = 'button';
+  forceBtn.textContent = 'Copy anyway';
+  forceBtn.style.display = 'none';
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'btn btn-secondary';
+  resetBtn.type = 'button';
+  resetBtn.textContent = 'Reset';
+  const demoBtn = document.createElement('button');
+  demoBtn.className = 'btn btn-secondary';
+  demoBtn.type = 'button';
+  demoBtn.textContent = 'Insert sample notes';
+  actions.append(copyBtn, forceBtn, resetBtn, demoBtn);
+  detailEl.appendChild(actions);
+
+  const status = document.createElement('div');
+  status.className = 'status';
+  status.id = 'status';
+  detailEl.appendChild(status);
+
+  const sampleNotes = {
+    P01: 'Station: [Station A]\nShift: Night\nVolume: slightly above typical midweek (range only)\nStaffing: plan covered; one supervisor floater\nEquipment: one belt delayed return from maintenance\nWeather: rain after 02:00\nOpen: feeder estimated ~30 min late (unverified)\nSafety: wet floors at dock doors',
+    P02: 'Outgoing: Night → Incoming: Day\nBelt late from maintenance; rain overnight; overflow lot used; feeder delay unconfirmed; QA watching misloads.',
+    P08: 'Station: [Station A]\nShift: Night\nConditions: rain after 02:00; wet dock plates likely\nEquipment: scanners OK; one belt late from maintenance',
+    P15: 'Discussed surge staffing ranges; need data request for OT index; QA to share misload theme summary (scrubbed); next check-in Friday.',
+    P20: 'On-time departure 94.2% (was 95.1%, target 96%)\nMisload 0.8% (was 0.6%, target ≤0.5%)\nOT index 112 vs baseline 100\nSafety observations 18 (was 22)\nNight sort, Station A, synthetic week',
+    P44: 'Task: auto-draft customer delay emails from live tracking and send without review\nTool: public consumer chatbot\nData: real tracking numbers and customer names'
+  };
+
+  async function doCopy(force) {
+    const hits = runScan();
+    if (hits.length && !force) {
+      status.className = 'status err';
+      status.textContent = 'Copy blocked by sensitivity scan. Scrub flagged items, or use Copy anyway if you are sure this is synthetic.';
+      forceBtn.style.display = '';
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(ta.value);
+      status.className = 'status ok';
+      status.textContent = 'Copied. Paste into Gemini Enterprise, then edit the draft before sharing.';
+      forceBtn.style.display = 'none';
+    } catch (e) {
+      ta.select();
+      document.execCommand('copy');
+      status.className = 'status ok';
+      status.textContent = 'Copied (fallback). Review draft after Gemini responds.';
+    }
+  }
+  copyBtn.onclick = () => doCopy(false);
+  forceBtn.onclick = () => doCopy(true);
+  resetBtn.onclick = () => {
+    ta.value = baseText;
+    currentText = baseText;
+    status.className = 'status';
+    status.textContent = 'Reset to original prompt text.';
+    forceBtn.style.display = 'none';
+    runScan();
+  };
+  demoBtn.onclick = () => {
+    const sample = sampleNotes[p.id];
+    if (!sample) {
+      status.className = 'status warn';
+      status.textContent = 'No bundled sample for this prompt — use demos/ folder or synthetic notes.';
+      return;
+    }
+    // append sample into first large bracket block if present, else append
+    if (/\[[^\]]{20,}\]/.test(ta.value)) {
+      ta.value = ta.value.replace(/\[[^\]]{20,}\]/, sample);
+    } else {
+      ta.value = ta.value + '\n\n--- sample scrubbed notes ---\n' + sample;
+    }
+    currentText = ta.value;
+    status.className = 'status ok';
+    status.textContent = 'Inserted synthetic sample notes. Review and copy.';
+    runScan();
+  };
+
+  runScan();
+  ta.focus();
+}
+
+function move(delta) {
+  if (!viewIds.length) return;
+  let idx = viewIds.indexOf(activeId);
+  if (idx < 0) idx = 0;
+  else idx = Math.max(0, Math.min(viewIds.length - 1, idx + delta));
+  select(viewIds[idx]);
+  const el = listEl.querySelector('[data-id="' + viewIds[idx] + '"]');
+  if (el) el.scrollIntoView({block:'nearest'});
+}
+
+qEl.addEventListener('input', renderList);
+catEl.addEventListener('change', renderList);
+weekEl.addEventListener('change', renderList);
+agentEl.addEventListener('change', renderList);
+document.addEventListener('keydown', (e) => {
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      const btn = detailEl.querySelector('.btn-primary');
+      if (btn) btn.click();
+    }
+    return;
+  }
+  if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+});
+
+renderList();
+select('P01');
+</script>
+</body>
+</html>
