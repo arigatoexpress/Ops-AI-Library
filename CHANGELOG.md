@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-03 - v2.1 Smith Agent and one-shot demo release
+
+- Integrated and attributed Travis Long's Smith Agent baseline: ARR qualification, GPS proof, OODA adaptation, and the Analyst/Planner/Operator/Auditor loop
+- Added a source-aware SharePoint contribution register covering checklist, TLH Survey, OTS draft, Preload BI links, ROM integration, and existing concept documents
+- Added a Google AI Studio one-shot prompt for a unified synthetic control-tower demo spanning Zero-Click, ACT, EAVA, VRAA, Smith Agent, inspections, TLH, OTS-style reporting, and resource governance
+- Added a reproducible synthetic-data standard with provenance, evidence classes, public-reference sources, scale, and invariant tests
+- Added the September 3 meeting run-of-show and decision asks
+- Removed the accidentally duplicated `travis-vscode-repo/` subtree, including stale live-system scripts and real-looking contact examples; valid concepts remain in the governed portfolio and history remains in Git
+
 ## 2026-08-27 - v2.0 Concept portfolio and meeting release
 
 - Integrated and attributed Travis Long's Virtual Ride-Along Agent, Zero-Click Compliance Agent, EAVA, and ACT proposals

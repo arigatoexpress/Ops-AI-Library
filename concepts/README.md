@@ -22,10 +22,11 @@ No file in this directory is production approval.
 | [Virtual Ride-Along Agent](virtual-ride-along-agent.md) | Travis Long | 0.9.1 / 2026-08-26 | Concept | Whether a route segment merits a human-reviewed Unique Characteristics evidence package |
 | [EAVA](eava.md) | Travis Long | 2026-08 | Concept | Where flow, density, orientation, or jam risk warrants attention |
 | [ACT](act.md) | Travis Long | 2026-08 | Concept | Which reversible intervention should a supervisor consider next |
+| [Smith Agent](smith-agent.md) | Travis Long | 1.0 / source received 2026-09-03 | Concept | Whether a recurring workflow has adequate evidence, steps, controls, and proof to advance |
 
 ## Shared system view
 
-Read [Integrated Operations Architecture](integrated-operations-architecture.md) for the combined perception, reasoning, action, evidence, and governance model.
+Read [Integrated Operations Architecture](integrated-operations-architecture.md) for the combined perception, reasoning, action, evidence, and governance model. Use [Smith Agent](smith-agent.md) as the shared orchestration and audit pattern across eligible workflows.
 
 ## Required intake for a new concept
 

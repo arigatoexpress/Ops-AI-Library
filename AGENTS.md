@@ -23,6 +23,8 @@ Not a production app monorepo.
 - Keep SharePoint/PA as plans until access is real.
 - Keep concepts labeled as concept, synthetic proof of concept, validation candidate, pilot, or production.
 - Keep prototype fixtures synthetic and use reserved `.invalid` addresses.
+- Apply `demos/synthetic-data-standard.md` to cross-concept demonstrations.
+- Treat title-only or inaccessible SharePoint items as pending sources; never infer their contents.
 - Run the Zero-Click unit tests when its prototype changes.
 
 ## Do not
@@ -32,6 +34,7 @@ Not a production app monorepo.
 - Re-center README on legacy apps.
 - Present modeled targets, proposed thresholds, or synthetic results as measured outcomes.
 - Add browser-session reuse, raw camera/voice data, or autonomous hardware control to a public demo.
+- Duplicate the repository inside a contributor subdirectory or retain live-system URLs and real-looking contacts in public examples.
 
 ## Verification
 
