@@ -2,6 +2,8 @@
 
 Use these in meetings and training. **No real data.**
 
+For the complete portfolio demonstration, paste the [Google AI Studio one-shot master prompt](google-ai-studio-master-prompt.md) into Build mode. Its generators and claims must follow the [synthetic-data standard](synthetic-data-standard.md).
+
 | Demo | Time | File | Sample output |
 | --- | --- | --- | --- |
 | Shift brief | 2 min | [01-shift-brief.md](01-shift-brief.md) | [sample-good-output-01.md](sample-good-output-01.md) |

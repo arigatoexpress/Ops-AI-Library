@@ -6,7 +6,7 @@ This repository brings together copy-ready Gemini workflows, reusable agent inst
 
 > **Prototype portfolio - not an official FedEx product or policy.** Use only approved enterprise tools and approved data. AI drafts and recommendations require human review. Never commit or paste customer, package, employee, route, security, credential, or facility-sensitive data into public or unapproved systems.
 
-[Open the offline hub](index.html) · [Browse 45 prompts](prompts/explorer.html) · [Prepare for the weekly meeting](docs/weekly-meeting-2026-08-27.md) · [Review the concept portfolio](concepts/README.md)
+[Launch today's one-shot demo](demos/google-ai-studio-master-prompt.md) · [Open the offline hub](index.html) · [Browse 45 prompts](prompts/explorer.html) · [Review the concept portfolio](concepts/README.md)
 
 ---
 
@@ -20,6 +20,8 @@ This repository brings together copy-ready Gemini workflows, reusable agent inst
 | Govern | [Safe-use rules](governance/safe-use-rules.md) and [review checklist](governance/project-review-checklist.md) | Active guardrails | Keeps data handling and human accountability explicit |
 | Incubate | [Operational AI concepts](concepts/README.md) | Concept / validation | Converts team ideas into testable, reviewable proposals |
 | Prepare | [Gemini Enterprise story kit](docs/gemini-enterprise-story-prep.md) | Interview draft | Packages the workflow, technique, evidence plan, and replicable takeaway |
+| Demonstrate | [Google AI Studio one-shot prompt](demos/google-ai-studio-master-prompt.md) | Synthetic build specification | Generates one coherent, source-aware control-tower demo |
+| Trace | [SharePoint contribution register](docs/sharepoint-contribution-register-2026-09-03.md) | Current as of 2026-09-03 | Shows what is integrated, pending, or intentionally not copied |
 
 ## Start in 60 seconds
 
@@ -34,7 +36,7 @@ For a team launch, use the [SharePoint native-page recipe](sharepoint/sharepoint
 
 ## Operational AI concept portfolio
 
-Travis Long's August 2026 proposals are now organized as a governed concept portfolio instead of loose documents or root-level demo scripts.
+Travis Long's August–September 2026 proposals are organized as a governed concept portfolio instead of loose documents or live-looking scripts.
 
 | Concept | Role in the portfolio | Current gate |
 | --- | --- | --- |
@@ -42,6 +44,7 @@ Travis Long's August 2026 proposals are now organized as a governed concept port
 | [Virtual Ride-Along Agent](concepts/virtual-ride-along-agent.md) | Translates route-condition telemetry into an evidence package for human review | Sensor calibration, privacy, consent, device, map-license, and FLME-owner validation required |
 | [EAVA](concepts/eava.md) | Produces privacy-minimized flow and jam-risk metadata from approved camera feeds | Camera authority, edge benchmark, model validation, cybersecurity, and safety review required |
 | [ACT](concepts/act.md) | Combines operational signals into ranked interventions and an auditable manager action plan | Advisory-only pilot before any hardware or labor action integration |
+| [Smith Agent](concepts/smith-agent.md) | Provides the Analyst → Planner → Operator → Auditor orchestration and audit loop | Concept pattern; tool permissions, retry behavior, proof, and owners require validation |
 
 The concepts share one operating principle: **sense or retrieve facts, reason within explicit constraints, then prepare the smallest reversible action for a human decision.**
 
@@ -70,7 +73,9 @@ See the [integrated architecture](concepts/integrated-operations-architecture.md
 | Review risk and data use | [Safe-use rules](governance/safe-use-rules.md) · [data cards](governance/data-cards.md) · [human in the loop](governance/human-in-the-loop.md) |
 | Review a new idea | [Concept portfolio](concepts/README.md) · [project review checklist](governance/project-review-checklist.md) |
 | Plan the cloud path | [GCP sandbox](playbooks/gcp-sandbox.md) · [Gemini Enterprise day one](playbooks/gemini-enterprise-day-one.md) |
-| Run this week's meeting | [August 27 meeting brief](docs/weekly-meeting-2026-08-27.md) |
+| Build the synthetic control-tower demo | [One-shot master prompt](demos/google-ai-studio-master-prompt.md) · [synthetic-data standard](demos/synthetic-data-standard.md) |
+| Run this week's meeting | [September 3 meeting brief](docs/weekly-meeting-2026-09-03.md) |
+| Audit source coverage | [SharePoint contribution register](docs/sharepoint-contribution-register-2026-09-03.md) |
 
 ## Portfolio boundaries
 
@@ -107,5 +112,6 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). New co
 ## Attribution
 
 - **Ops AI Library and integrated enablement program:** AI Efficiency Group contributors
-- **Zero-Click Compliance Agent, Virtual Ride-Along Agent, EAVA, and ACT concepts:** Travis Long
+- **Zero-Click Compliance Agent, Virtual Ride-Along Agent, EAVA, ACT, and Smith Agent concepts:** Travis Long
+- **Repository integration and demo synthesis:** Ari Spector and AI Efficiency Group contributors
 - **Human review and final operational accountability:** the authorized business owner for each use case
