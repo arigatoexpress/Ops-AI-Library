@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NRXX District Peak Staffing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --fdx-purple: #4D148C;
+            --fdx-orange: #FF6600;
+            --fdx-light-gray: #f3f4f6;
+            --fdx-dark-gray: #374151;
+        }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: var(--fdx-light-gray); color: var(--fdx-dark-gray); }
+        .text-purple { color: var(--fdx-purple); } .text-orange { color: var(--fdx-orange); } .bg-purple { background-color: var(--fdx-purple); } .bg-orange { background-color: var(--fdx-orange); }
+        .border-purple { border-color: var(--fdx-purple); } .border-orange { border-color: var(--fdx-orange); }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; background-color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .nav-scroller { overflow-x: auto; white-space: nowrap; -ms-overflow-style: none; scrollbar-width: none; }
+        .nav-scroller::-webkit-scrollbar { display: none; }
+        .card { background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); padding: 1.5rem; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+<div class="bg-orange text-white text-center py-2 font-bold text-lg" id="countdown-banner">Loading...</div>
+<nav class="sticky-nav py-3 px-6 flex items-center justify-between">
+    <div class="font-bold text-xl text-purple flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+        NRXX Peak Staffing
+    </div>
+    <div class="nav-scroller space-x-4 text-sm font-medium">
+        <a href="#summary" class="text-purple hover:text-orange transition">Overall Summary</a>
+        <a href="#charts" class="text-purple hover:text-orange transition">District Charts</a>
+        <span class="text-gray-400">|</span>
+        <span id="nav-links"></span>
+    </div>
+</nav>
+<main class="container mx-auto px-4 py-8 max-w-7xl">
+    <section id="summary" class="mb-12"><h2 class="text-2xl font-bold text-purple mb-6 border-b-2 border-purple inline-block pb-1">District Summary</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="summary-cards"></div></section>
+    <section id="charts" class="mb-12"><h2 class="text-2xl font-bold text-purple mb-6 border-b-2 border-purple inline-block pb-1">Overall District Visuals</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="card"><h3 class="font-bold text-lg mb-4 text-center">Net New Hires Needed by Node</h3><canvas id="chart-net-needed"></canvas></div><div class="card"><h3 class="font-bold text-lg mb-4 text-center">% to Peak Staffing Need</h3><canvas id="chart-pct-staffed"></canvas></div></div></section>
+    <section id="individual-breakdowns"><h2 class="text-2xl font-bold text-purple mb-6 border-b-2 border-purple inline-block pb-1">Individual Node Breakdowns</h2><div id="nodes-container" class="space-y-12"></div></section>
+</main>
+
+<script>
+// --- RAW CSV DATA TEMPLATE LITERALS ---
+const rawHiresTermsCSV = ``;
+const rawRosterNeedActualCSV = ``;
+
+// --- This script block is a direct copy of your working file, with the single required fix ---
+document.addEventListener("DOMContentLoaded", function() {
+    try {
+        function parseCSV(text) {
+            if (!text || text.trim() === '') return [];
+            return text.trim().split(/\r?\n/).map(line => line.split(',').map(s => s.trim()));
+        }
+
+        const matrixHires = parseCSV(rawHiresTermsCSV);
+        const matrixActuals = parseCSV(rawRosterNeedActualCSV);
+
+        if (matrixActuals.length < 3) throw new Error("Dashboard Error: Not enough data provided to build the dashboard.");
+
+        const headerNodes = matrixActuals[0];
+        const rawNodes = [];
+        const colIndices = [];
+        for (let c = 0; c < headerNodes.length; c++) {
+            if (headerNodes[c]) { rawNodes.push(headerNodes[c]); colIndices.push(c); }
+        }
+        
+        const phtCounts = [];
+        const phtRow = matrixActuals[1];
+        colIndices.forEach(col => {
+            let phtVal = 0;
+            for (let offset = 0; offset < 4; offset++) {
+                let candidate = parseInt(phtRow[col + offset], 10);
+                if (!isNaN(candidate)) { phtVal = candidate; break; }
+            }
+            phtCounts.push(phtVal);
+        });
+
+        function getThanksgivingDate(year) {
+            const novFirst = new Date(year, 10, 1);
+            const dayOfWeek = novFirst.getDay();
+            return new Date(year, 10, 1 + (4 - dayOfWeek + 7) % 7 + 21);
+        }
+        const peakTargetDate = getThanksgivingDate(new Date().getFullYear());
+        let nodeData = {};
+
+        rawNodes.forEach((node, index) => {
+            const colStart = colIndices[index];
+            let hires = [], terms = [], histDates = [], totalHires = 0, totalTerms = 0;
+            for (let r = 2; r < matrixHires.length; r++) {
+                const row = matrixHires[r];
+                if (row && row.length > colStart && row[colStart]) {
+                    const h = parseInt(row[colStart + 1], 10) || 0;
+                    const t = parseInt(row[colStart + 2], 10) || 0;
+                    hires.push(h); terms.push(t); histDates.push(row[colStart]); totalHires += h; totalTerms += t;
+                }
+            }
+            
+            let currentActual = 0, peakNeed = 0, needTrend = [], actualTrend = [], actualDates = [], stationBaselineDate = null;
+            
+            // ** THE DEFINITIVE FIX: UNIVERSAL BASELINE LOGIC **
+            // This loop now correctly finds the most recent, non-zero actual headcount date for EACH node, including "NRXX Overall".
+            for (let r = matrixActuals.length - 1; r >= 3; r--) {
+                const row = matrixActuals[r];
+                if (row && row.length > colStart && row[colStart] && (parseInt(row[colStart + 2], 10) > 0)) {
+                    stationBaselineDate = row[colStart];
+                    break;
+                }
+            }
+            
+            for (let r = 3; r < matrixActuals.length; r++) {
+                const row = matrixActuals[r];
+                if (row && row.length > colStart && row[colStart]) {
+                    const date = row[colStart];
+                    const need = parseInt(row[colStart + 1], 10) || 0;
+                    const actual = parseInt(row[colStart + 2], 10) || 0;
+                    actualDates.push(date); needTrend.push(need); actualTrend.push(actual > 0 ? actual : null);
+                    if (date === stationBaselineDate) currentActual = actual;
+                    if (date.includes('-11-') || date.includes('-12-')) { if (need > peakNeed) peakNeed = need; }
+                }
+            }
+            if (peakNeed === 0 && needTrend.length > 0) peakNeed = Math.max(...needTrend.filter(Boolean));
+
+            const weeksToPeak = stationBaselineDate ? Math.max(1, (peakTargetDate - new Date(stationBaselineDate)) / (1000 * 60 * 60 * 24 * 7)) : 1;
+            const avgTerms = terms.slice(-8).reduce((a, b) => a + b, 0) / (terms.slice(-8).length || 1);
+            const netNeeded = Math.max(0, peakNeed - currentActual);
+            const weeklyTarget = (netNeeded / weeksToPeak) + avgTerms;
+
+            nodeData[node] = {
+                name: node, currentActual, peakNeed, netNeeded, netHiresYTD: totalHires - totalTerms, totalHires, totalTerms,
+                avgTerms: avgTerms.toFixed(1), weeklyTarget: Math.ceil(weeklyTarget), weeklyTargetExact: weeklyTarget.toFixed(1),
+                phtActual: phtCounts[index] || 0, phtNeeded: Math.ceil((weeklyTarget * 3) / 8),
+                pctStaffed: peakNeed > 0 ? ((currentActual / peakNeed) * 100).toFixed(1) : '100.0',
+                trends: { dates: histDates, hires, terms, actDates: actualDates, needTrend, actualTrend }
+            };
+        });
+
+        // --- All rendering logic below is from your working file and is correct ---
+        function updateCountdown() {
+            let now = new Date(), target = getThanksgivingDate(now.getFullYear());
+            if (now > target) target = getThanksgivingDate(now.getFullYear() + 1);
+            let days = Math.floor((target - now) / (1000 * 60 * 60 * 24)), weeks = Math.floor(days / 7), remainderDays = days % 7;
+            document.getElementById('countdown-banner').innerText = `${weeks} Weeks, ${remainderDays} Days until Thanksgiving Target (${target.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
+        }
+        updateCountdown();
+        const navLinks = document.getElementById('nav-links');
+        rawNodes.forEach((n, i) => {
+            if (i === 0) return;
+            let cleanId = n.split('/')[0].toLowerCase();
+            navLinks.innerHTML += `<a href="#node-${cleanId}" class="text-purple hover:text-orange transition ml-4">${n.split('/')[0]}</a>`;
+        });
+        const ov = nodeData[rawNodes[0]], individualNodes = Object.values(nodeData).slice(1);
+        const sortedByNetNeed = [...individualNodes].sort((a, b) => b.netNeeded - a.netNeeded);
+        const topPrioritiesHtml = sortedByNetNeed.slice(0, 3).map(n => `<li class="mb-2"><strong>${n.name}:</strong> Need ${n.netNeeded} (Net YTD: ${n.netHiresYTD >= 0 ? '+' : ''}${n.netHiresYTD})</li>`).join('');
+        const sortedByPct = [...individualNodes].sort((a, b) => parseFloat(a.pctStaffed) - parseFloat(b.pctStaffed));
+        const bottomPctHtml = sortedByPct.slice(0, 2).map(n => `<li class="mb-2"><strong>${n.name}:</strong> ${n.pctStaffed}% Staffed (Need: ${n.netNeeded})</li>`).join('');
+        const commitmentsHtml = sortedByNetNeed.map(n => `<div class="flex justify-between text-sm py-1 border-b"><span>${n.name}</span><span class="font-bold text-orange">${n.netNeeded}</span></div>`).join('');
+        const summaryHtml = `<div class="card border-t-4 border-orange"><h3 class="font-bold text-lg mb-3">Top Priorities</h3><p class="text-xs text-gray-500 mb-3">Nodes requiring highest volume of new hires to hit peak need.</p><ul class="text-sm list-disc pl-5">${topPrioritiesHtml}</ul></div><div class="card border-t-4 border-orange"><h3 class="font-bold text-lg mb-3">Support Needs</h3><p class="text-xs text-gray-500 mb-3">Nodes furthest behind staffing capacity percentage.</p><ul class="text-sm list-disc pl-5">${bottomPctHtml}</ul></div><div class="card h-72 overflow-y-auto"><h3 class="font-bold text-lg mb-2 sticky top-0 bg-white">Key Commitments (Net Needed)</h3><div class="flex justify-between text-sm py-1 border-b bg-gray-100 font-bold"><span>DISTRICT OVERALL</span><span class="text-purple">${ov.netNeeded}</span></div>${commitmentsHtml}</div><div class="card h-72 overflow-y-auto border-t-4 border-purple"><h3 class="font-bold text-lg mb-2 sticky top-0 bg-white">Overall Roster vs Actual</h3><div class="text-sm space-y-2"><p><strong>Overall Peak Need:</strong> ${ov.peakNeed}</p><p><strong>Overall Actual:</strong> ${ov.currentActual} (${ov.pctStaffed}%)</p><p><strong>YTD Total Hires:</strong> ${ov.totalHires}</p><p><strong>YTD Total Terms:</strong> ${ov.totalTerms}</p><p><strong>Net District Hires:</strong> <span class="${ov.netHiresYTD < 0 ? 'text-red-500' : 'text-green-600'} font-bold">${ov.netHiresYTD >= 0 ? '+' : ''}${ov.netHiresYTD}</span></p><hr><p class="text-xs font-bold mt-2">Individual Net Hires (YTD):</p>${individualNodes.map(n => `<div class="flex justify-between text-xs py-0.5"><span>${n.name}</span><span class="${n.netHiresYTD < 0 ? 'text-red-500' : 'text-green-700'} font-semibold">${n.netHiresYTD >= 0 ? '+' : ''}${n.netHiresYTD}</span></div>`).join('')}</div></div>`;
+        document.getElementById('summary-cards').innerHTML = summaryHtml;
+        const nodeLabels = individualNodes.map(n => n.name.split('/')[0]);
+        new Chart(document.getElementById('chart-net-needed'), {type: 'bar', data: {labels: nodeLabels, datasets: [{label: 'Net New Hires Needed', data: individualNodes.map(n=>n.netNeeded), backgroundColor: '#4D148C', borderRadius: 4}]}, options: {responsive: true, plugins: { legend: { display: false } }, scales: {y: { beginAtZero: true }}}});
+        new Chart(document.getElementById('chart-pct-staffed'), {type: 'bar', data: {labels: nodeLabels, datasets: [{label: '% Staffed to Peak Need', data: individualNodes.map(n=>parseFloat(n.pctStaffed)), backgroundColor: individualNodes.map(v=>parseFloat(v.pctStaffed)<70?'#FF6600':'#4D148C'), borderRadius: 4}]}, options: {responsive: true, plugins: { legend: { display: false } }, scales: {y: { min: 40, max: 130 }}}});
+        const nodesContainer = document.getElementById('nodes-container');
+        individualNodes.forEach((node) => {
+            let cleanId = node.name.split('/')[0].toLowerCase();
+            let phtStatusClass = node.phtActual >= node.phtNeeded ? "text-green-600" : "text-orange font-bold";
+            let html = `<div id="node-${cleanId}" class="card border-l-8 border-purple scroll-mt-20"><h3 class="text-2xl font-bold mb-4 text-purple">${node.name}</h3><div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6"><div class="bg-gray-100 p-3 rounded text-center"><p class="text-xs text-gray-500 uppercase tracking-wide">Current Actual</p><p class="text-xl font-bold">${node.currentActual}</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-xs text-gray-500 uppercase tracking-wide">Peak Need</p><p class="text-xl font-bold">${node.peakNeed}</p></div><div class="bg-orange p-3 rounded text-center text-white shadow-md transform hover:scale-105 transition flex flex-col justify-center"><p class="text-[11px] uppercase tracking-wide leading-tight">Net Needed</p><p class="text-2xl font-bold">${node.netNeeded}</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-[11px] text-gray-500 uppercase tracking-wide leading-tight">Gross Wkly Target</p><p class="text-xl font-bold">${node.weeklyTargetExact}</p><p class="text-[10px] text-gray-400 mt-1">+${node.avgTerms} avg terms/wk</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-[11px] text-gray-500 uppercase tracking-wide leading-tight">Net Hires YTD</p><p class="text-xl font-bold ${node.netHiresYTD < 0 ? 'text-red-500' : 'text-green-700'}">${node.netHiresYTD >= 0 ? '+' : ''}${node.netHiresYTD}</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-[11px] text-gray-500 uppercase tracking-wide leading-tight">PHT (Need vs Act)</p><p class="text-lg font-bold"><span class="text-purple">${node.phtNeeded}</span> / <span class="${phtStatusClass}">${node.phtActual}</span></p></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div><h4 class="text-sm font-bold text-center mb-2">Hires vs Terms Trend</h4><canvas id="ht-chart-${cleanId}"></canvas></div><div><h4 class="text-sm font-bold text-center mb-2">Actual vs Need Trend</h4><canvas id="an-chart-${cleanId}"></canvas></div></div></div>`;
+            nodesContainer.insertAdjacentHTML('beforeend', html);
+            setTimeout(() => {
+                new Chart(document.getElementById(`ht-chart-${cleanId}`).getContext('2d'), {type: 'line', data: {labels: node.trends.dates, datasets: [{ label: 'Hires', data: node.trends.hires, borderColor: '#4D148C', backgroundColor: 'rgba(77, 20, 140, 0.1)', fill: true, tension: 0.3 }, { label: 'Terms', data: node.trends.terms, borderColor: '#FF6600', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3 }]}, options: { responsive: true, plugins: { legend: { position: 'top' } } }});
+                new Chart(document.getElementById(`an-chart-${cleanId}`).getContext('2d'), {type: 'line', data: {labels: node.trends.actDates, datasets: [{ label: 'Projected Need', data: node.trends.needTrend, borderColor: '#374151', borderDash: [2, 2], tension: 0.1 }, { label: 'Actual Headcount', data: node.trends.actualTrend, borderColor: '#008000', backgroundColor: 'rgba(0, 128, 0, 0.1)', fill: true, tension: 0.3, spanGaps: true }]}, options: { responsive: true, plugins: { legend: { position: 'top' } } }});
+            }, 50);
+        });
+        
+    } catch (e) {
+        console.error("Dashboard Error:", e);
+        document.body.innerHTML = `<div style="font-family: sans-serif; padding: 2rem; background-color: #ffebee; border: 1px solid #c62828; color: #b71c1c;"><strong>Fatal Error:</strong> ${e.message}</div>`;
+    }
+});
+</script>
+</body>
+</html>

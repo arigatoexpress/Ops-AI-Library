@@ -1,0 +1,26 @@
+======================================================= 
+NRXX Staffing Agent Run Initiated: Tue 09/22/2026 14:19:18.03 
+Working Directory: C:\Users\3159391\Downloads\speckit-base-repo-main (1)\travis-vscode-repo 
+======================================================= 
+Executing build_weekly_staffing_data.py... 
+NOTE: Corporate certificate file 'corporate_certs.pem' not found. Downloads will use standard SSL verification.
+--- Running NRXX Data Pipeline (Bundler Edition) ---
+✅ PHT counts loaded.
+✅ Station data consolidation complete. Total records: 300
+✅ 'NRXX Overall' data calculated by summing station data.
+✅ Data transformed.
+
+Creating bundled HTML file...
+✅ Data injected.
+    > Downloading: https://cdn.tailwindcss.com
+    ⚠️ WARNING: Could not download https://cdn.tailwindcss.com. The file will link to it instead. Error: HTTPSConnectionPool(host='cdn.tailwindcss.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)')))
+    > Downloading: https://cdn.jsdelivr.net/npm/chart.js
+    ⚠️ WARNING: Could not download https://cdn.jsdelivr.net/npm/chart.js. The file will link to it instead. Error: HTTPSConnectionPool(host='cdn.jsdelivr.net', port=443): Max retries exceeded with url: /npm/chart.js (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)')))
+
+✅ Bundled HTML Dashboard successfully created at: C:\Users\3159391\Downloads\speckit-base-repo-main (1)\travis-vscode-repo\output\NRXX_Dashboard_LATEST_20260922_141919_Bundled.html
+
+Opening the self-contained dashboard file...
+
+--- Script Finished ---
+[SUCCESS] Pipeline completed successfully at 14:19:24.09. 
+======================================================= 

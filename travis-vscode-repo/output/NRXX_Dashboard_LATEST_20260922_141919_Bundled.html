@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NRXX District Peak Staffing Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --fdx-purple: #4D148C;
+            --fdx-orange: #FF6600;
+            --fdx-light-gray: #f3f4f6;
+            --fdx-dark-gray: #374151;
+        }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: var(--fdx-light-gray); color: var(--fdx-dark-gray); }
+        .text-purple { color: var(--fdx-purple); } .text-orange { color: var(--fdx-orange); } .bg-purple { background-color: var(--fdx-purple); } .bg-orange { background-color: var(--fdx-orange); }
+        .border-purple { border-color: var(--fdx-purple); } .border-orange { border-color: var(--fdx-orange); }
+        .sticky-nav { position: sticky; top: 0; z-index: 50; background-color: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .nav-scroller { overflow-x: auto; white-space: nowrap; -ms-overflow-style: none; scrollbar-width: none; }
+        .nav-scroller::-webkit-scrollbar { display: none; }
+        .card { background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); padding: 1.5rem; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+<div class="bg-orange text-white text-center py-2 font-bold text-lg" id="countdown-banner">Loading...</div>
+<nav class="sticky-nav py-3 px-6 flex items-center justify-between">
+    <div class="font-bold text-xl text-purple flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+        NRXX Peak Staffing
+    </div>
+    <div class="nav-scroller space-x-4 text-sm font-medium">
+        <a href="#summary" class="text-purple hover:text-orange transition">Overall Summary</a>
+        <a href="#charts" class="text-purple hover:text-orange transition">District Charts</a>
+        <span class="text-gray-400">|</span>
+        <span id="nav-links"></span>
+    </div>
+</nav>
+<main class="container mx-auto px-4 py-8 max-w-7xl">
+    <section id="summary" class="mb-12"><h2 class="text-2xl font-bold text-purple mb-6 border-b-2 border-purple inline-block pb-1">District Summary</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="summary-cards"></div></section>
+    <section id="charts" class="mb-12"><h2 class="text-2xl font-bold text-purple mb-6 border-b-2 border-purple inline-block pb-1">Overall District Visuals</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="card"><h3 class="font-bold text-lg mb-4 text-center">Net New Hires Needed by Node</h3><canvas id="chart-net-needed"></canvas></div><div class="card"><h3 class="font-bold text-lg mb-4 text-center">% to Peak Staffing Need</h3><canvas id="chart-pct-staffed"></canvas></div></div></section>
+    <section id="individual-breakdowns"><h2 class="text-2xl font-bold text-purple mb-6 border-b-2 border-purple inline-block pb-1">Individual Node Breakdowns</h2><div id="nodes-container" class="space-y-12"></div></section>
+</main>
+
+<script>
+// --- RAW CSV DATA TEMPLATE LITERALS ---
+const rawHiresTermsCSV = `NRXX Overall,,,,RENO/895,,,,SACL/942,,,,FAIR/945,,,,RCHM/948,,,,UKIA/949,,,,SROS/954,,,,EURK/955,,,,ROSV/956,,,,ESAC/957,,,,ESAX/950,,,,SACR/958,,,,CHCO/959,,,,REDD/960
+EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms,,EOW,Hires Count,Terms
+2026-06-27,29,78,,2026-06-27,2,15,,2026-06-27,,5,,2026-06-27,7,2,,2026-06-27,3,5,,2026-06-27,,,,2026-06-27,,1,,2026-06-27,,,,2026-06-27,,3,,2026-06-27,,,,2026-06-27,,,,2026-06-27,10,47,,2026-06-27,7,,,2026-06-27
+2026-07-04,108,68,,2026-07-04,17,21,,2026-07-04,,,,2026-07-04,,2,,2026-07-04,7,4,,2026-07-04,,,,2026-07-04,7,,,2026-07-04,,1,,2026-07-04,9,1,,2026-07-04,13,1,,2026-07-04,,,,2026-07-04,55,34,,2026-07-04,,3,,2026-07-04,,1
+2026-07-11,124,106,,2026-07-11,22,24,,2026-07-11,14,1,,2026-07-11,10,2,,2026-07-11,7,4,,2026-07-11,,,,2026-07-11,,3,,2026-07-11,2,,,2026-07-11,,10,,2026-07-11,,3,,2026-07-11,,,,2026-07-11,69,58,,2026-07-11,,1,,2026-07-11
+2026-07-18,114,96,,2026-07-18,25,25,,2026-07-18,,3,,2026-07-18,9,4,,2026-07-18,,5,,2026-07-18,,,,2026-07-18,,2,,2026-07-18,,,,2026-07-18,6,4,,2026-07-18,,3,,2026-07-18,,,,2026-07-18,74,49,,2026-07-18,,1,,2026-07-18
+2026-07-25,74,89,,2026-07-25,4,25,,2026-07-25,,3,,2026-07-25,,7,,2026-07-25,8,4,,2026-07-25,,,,2026-07-25,,1,,2026-07-25,,1,,2026-07-25,,9,,2026-07-25,,,,2026-07-25,,,,2026-07-25,62,37,,2026-07-25,,,,2026-07-25,,2
+2026-08-01,92,105,,2026-08-01,11,24,,2026-08-01,,6,,2026-08-01,4,5,,2026-08-01,12,2,,2026-08-01,,,,2026-08-01,,5,,2026-08-01,,,,2026-08-01,,5,,2026-08-01,7,1,,2026-08-01,,,,2026-08-01,58,53,,2026-08-01,,2,,2026-08-01,,2
+2026-08-08,96,67,,2026-08-08,27,13,,2026-08-08,5,2,,2026-08-08,8,3,,2026-08-08,4,4,,2026-08-08,,,,2026-08-08,,,,2026-08-08,2,,,2026-08-08,,5,,2026-08-08,,1,,2026-08-08,,,,2026-08-08,47,36,,2026-08-08,,1,,2026-08-08,3,2
+2026-08-15,89,46,,2026-08-15,37,9,,2026-08-15,,5,,2026-08-15,,5,,2026-08-15,,5,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,5,2,,2026-08-15,,1,,2026-08-15,,,,2026-08-15,36,19,,2026-08-15,11,,,2026-08-15
+2026-08-22,67,79,,2026-08-22,24,23,,2026-08-22,5,2,,2026-08-22,,4,,2026-08-22,,4,,2026-08-22,,,,2026-08-22,3,1,,2026-08-22,,,,2026-08-22,13,,,2026-08-22,,5,,2026-08-22,,,,2026-08-22,18,39,,2026-08-22,,1,,2026-08-22,4
+2026-08-29,77,83,,2026-08-29,36,20,,2026-08-29,,9,,2026-08-29,3,5,,2026-08-29,10,2,,2026-08-29,,,,2026-08-29,,1,,2026-08-29,,,,2026-08-29,10,5,,2026-08-29,,4,,2026-08-29,,,,2026-08-29,18,37,,2026-08-29,,,,2026-08-29
+2026-09-05,83,109,,2026-09-05,39,23,,2026-09-05,8,7,,2026-09-05,5,6,,2026-09-05,3,3,,2026-09-05,,,,2026-09-05,,2,,2026-09-05,,,,2026-09-05,,11,,2026-09-05,,1,,2026-09-05,,,,2026-09-05,28,53,,2026-09-05,,3,,2026-09-05
+2026-09-12,74,77,,2026-09-12,31,22,,2026-09-12,,4,,2026-09-12,,3,,2026-09-12,10,4,,2026-09-12,,,,2026-09-12,,,,2026-09-12,,,,2026-09-12,,6,,2026-09-12,16,,,2026-09-12,,,,2026-09-12,11,37,,2026-09-12,6,,,2026-09-12,,1
+2026-09-19,44,27,,2026-09-19,23,15,,2026-09-19,,,,2026-09-19,,,,2026-09-19,,,,2026-09-19,,,,2026-09-19,,,,2026-09-19,,,,2026-09-19,12,2,,2026-09-19,,5,,2026-09-19,,,,2026-09-19,9,5,,2026-09-19,,,,2026-09-19
+2026-09-26,0,0,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26,,,,2026-09-26
+2026-10-03,0,0,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03,,,,2026-10-03
+2026-10-10,0,0,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10,,,,2026-10-10
+2026-10-17,0,0,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17,,,,2026-10-17
+2026-10-24,0,0,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24,,,,2026-10-24
+2026-10-31,0,0,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31,,,,2026-10-31
+2026-11-07,0,0,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07,,,,2026-11-07
+2026-11-14,0,0,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14,,,,2026-11-14
+2026-11-21,0,0,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21,,,,2026-11-21
+2026-11-28,0,0,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28,,,,2026-11-28
+2026-12-05,0,0,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05,,,,2026-12-05
+2026-12-12,0,0,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12,,,,2026-12-12
+2026-12-19,0,0,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19,,,,2026-12-19
+2026-12-26,0,0,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26,,,,2026-12-26`;
+const rawRosterNeedActualCSV = `NRXX Overall,,,,RENO/895,,,,SACL/942,,,,FAIR/945,,,,RCHM/948,,,,UKIA/949,,,,SROS/954,,,,EURK/955,,,,ROSV/956,,,,ESAC/957,,,,ESAX/950,,,,SACR/958,,,,CHCO/959,,,,REDD/960
+PHT Count,,99,,PHT Count,,28,,PHT Count,,1,,PHT Count,,12,,PHT Count,,7,,PHT Count,,1,,PHT Count,,5,,PHT Count,,0,,PHT Count,,11,,PHT Count,,5,,PHT Count,,0,,PHT Count,,27,,PHT Count,,1,,PHT Count,,1
+EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount,,EOW,Roster Need,Actual Headcount
+2026-06-27,0,0,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27,,,,2026-06-27
+2026-07-04,0,0,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04,,,,2026-07-04
+2026-07-11,0,0,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11,,,,2026-07-11
+2026-07-18,0,0,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18,,,,2026-07-18
+2026-07-25,0,0,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25,,,,2026-07-25
+2026-08-01,0,0,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01,,,,2026-08-01
+2026-08-08,0,0,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08,,,,2026-08-08
+2026-08-15,0,0,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15,,,,2026-08-15
+2026-08-22,0,0,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22,,,,2026-08-22
+2026-08-29,2352,2563,,2026-08-29,381,515,,2026-08-29,144,136,,2026-08-29,140,157,,2026-08-29,136,135,,2026-08-29,29,21,,2026-08-29,79,82,,2026-08-29,26,24,,2026-08-29,240,232,,2026-08-29,156,146,,2026-08-29,,,,2026-08-29,877,984,,2026-08-29,73,72,,2026-08-29,71,59
+2026-09-05,2335,2543,,2026-09-05,375,530,,2026-09-05,149,138,,2026-09-05,142,156,,2026-09-05,138,136,,2026-09-05,28,21,,2026-09-05,80,80,,2026-09-05,27,24,,2026-09-05,235,222,,2026-09-05,156,145,,2026-09-05,,,,2026-09-05,864,962,,2026-09-05,71,69,,2026-09-05,70,60
+2026-09-12,2335,2538,,2026-09-12,375,538,,2026-09-12,149,135,,2026-09-12,142,152,,2026-09-12,138,143,,2026-09-12,28,21,,2026-09-12,80,80,,2026-09-12,27,24,,2026-09-12,235,215,,2026-09-12,156,161,,2026-09-12,,,,2026-09-12,864,937,,2026-09-12,71,75,,2026-09-12,70,57
+2026-09-19,2335,0,,2026-09-19,375,,,2026-09-19,149,,,2026-09-19,142,,,2026-09-19,138,,,2026-09-19,28,,,2026-09-19,80,,,2026-09-19,27,,,2026-09-19,235,,,2026-09-19,156,,,2026-09-19,,,,2026-09-19,864,,,2026-09-19,71,,,2026-09-19,70
+2026-09-26,2335,0,,2026-09-26,375,,,2026-09-26,149,,,2026-09-26,142,,,2026-09-26,138,,,2026-09-26,28,,,2026-09-26,80,,,2026-09-26,27,,,2026-09-26,235,,,2026-09-26,156,,,2026-09-26,,,,2026-09-26,864,,,2026-09-26,71,,,2026-09-26,70
+2026-10-03,2415,0,,2026-10-03,366,,,2026-10-03,155,,,2026-10-03,152,,,2026-10-03,142,,,2026-10-03,29,,,2026-10-03,86,,,2026-10-03,27,,,2026-10-03,245,,,2026-10-03,162,,,2026-10-03,,,,2026-10-03,904,,,2026-10-03,73,,,2026-10-03,74
+2026-10-10,2415,0,,2026-10-10,366,,,2026-10-10,155,,,2026-10-10,152,,,2026-10-10,142,,,2026-10-10,29,,,2026-10-10,86,,,2026-10-10,27,,,2026-10-10,245,,,2026-10-10,162,,,2026-10-10,,,,2026-10-10,904,,,2026-10-10,73,,,2026-10-10,74
+2026-10-17,2415,0,,2026-10-17,366,,,2026-10-17,155,,,2026-10-17,152,,,2026-10-17,142,,,2026-10-17,29,,,2026-10-17,86,,,2026-10-17,27,,,2026-10-17,245,,,2026-10-17,162,,,2026-10-17,,,,2026-10-17,904,,,2026-10-17,73,,,2026-10-17,74
+2026-10-24,2415,0,,2026-10-24,366,,,2026-10-24,155,,,2026-10-24,152,,,2026-10-24,142,,,2026-10-24,29,,,2026-10-24,86,,,2026-10-24,27,,,2026-10-24,245,,,2026-10-24,162,,,2026-10-24,,,,2026-10-24,904,,,2026-10-24,73,,,2026-10-24,74
+2026-10-31,2415,0,,2026-10-31,366,,,2026-10-31,155,,,2026-10-31,152,,,2026-10-31,142,,,2026-10-31,29,,,2026-10-31,86,,,2026-10-31,27,,,2026-10-31,245,,,2026-10-31,162,,,2026-10-31,,,,2026-10-31,904,,,2026-10-31,73,,,2026-10-31,74
+2026-11-07,2822,0,,2026-11-07,434,,,2026-11-07,168,,,2026-11-07,188,,,2026-11-07,157,,,2026-11-07,32,,,2026-11-07,96,,,2026-11-07,29,,,2026-11-07,282,,,2026-11-07,188,,,2026-11-07,,,,2026-11-07,1077,,,2026-11-07,85,,,2026-11-07,86
+2026-11-14,2822,0,,2026-11-14,434,,,2026-11-14,168,,,2026-11-14,188,,,2026-11-14,157,,,2026-11-14,32,,,2026-11-14,96,,,2026-11-14,29,,,2026-11-14,282,,,2026-11-14,188,,,2026-11-14,,,,2026-11-14,1077,,,2026-11-14,85,,,2026-11-14,86
+2026-11-21,2822,0,,2026-11-21,434,,,2026-11-21,168,,,2026-11-21,188,,,2026-11-21,157,,,2026-11-21,32,,,2026-11-21,96,,,2026-11-21,29,,,2026-11-21,282,,,2026-11-21,188,,,2026-11-21,,,,2026-11-21,1077,,,2026-11-21,85,,,2026-11-21,86
+2026-11-28,2822,0,,2026-11-28,434,,,2026-11-28,168,,,2026-11-28,188,,,2026-11-28,157,,,2026-11-28,32,,,2026-11-28,96,,,2026-11-28,29,,,2026-11-28,282,,,2026-11-28,188,,,2026-11-28,,,,2026-11-28,1077,,,2026-11-28,85,,,2026-11-28,86
+2026-12-05,2892,0,,2026-12-05,406,,,2026-12-05,176,,,2026-12-05,184,,,2026-12-05,166,,,2026-12-05,33,,,2026-12-05,98,,,2026-12-05,29,,,2026-12-05,297,,,2026-12-05,197,,,2026-12-05,,,,2026-12-05,1127,,,2026-12-05,92,,,2026-12-05,87
+2026-12-12,2892,0,,2026-12-12,406,,,2026-12-12,176,,,2026-12-12,184,,,2026-12-12,166,,,2026-12-12,33,,,2026-12-12,98,,,2026-12-12,29,,,2026-12-12,297,,,2026-12-12,197,,,2026-12-12,,,,2026-12-12,1127,,,2026-12-12,92,,,2026-12-12,87
+2026-12-19,2892,0,,2026-12-19,406,,,2026-12-19,176,,,2026-12-19,184,,,2026-12-19,166,,,2026-12-19,33,,,2026-12-19,98,,,2026-12-19,29,,,2026-12-19,297,,,2026-12-19,197,,,2026-12-19,,,,2026-12-19,1127,,,2026-12-19,92,,,2026-12-19,87
+2026-12-26,2892,0,,2026-12-26,406,,,2026-12-26,176,,,2026-12-26,184,,,2026-12-26,166,,,2026-12-26,33,,,2026-12-26,98,,,2026-12-26,29,,,2026-12-26,297,,,2026-12-26,197,,,2026-12-26,,,,2026-12-26,1127,,,2026-12-26,92,,,2026-12-26,87`;
+
+// --- This script block is a direct copy of your working file, with the single required fix ---
+document.addEventListener("DOMContentLoaded", function() {
+    try {
+        function parseCSV(text) {
+            if (!text || text.trim() === '') return [];
+            return text.trim().split(/\r?\n/).map(line => line.split(',').map(s => s.trim()));
+        }
+
+        const matrixHires = parseCSV(rawHiresTermsCSV);
+        const matrixActuals = parseCSV(rawRosterNeedActualCSV);
+
+        if (matrixActuals.length < 3) throw new Error("Dashboard Error: Not enough data provided to build the dashboard.");
+
+        const headerNodes = matrixActuals[0];
+        const rawNodes = [];
+        const colIndices = [];
+        for (let c = 0; c < headerNodes.length; c++) {
+            if (headerNodes[c]) { rawNodes.push(headerNodes[c]); colIndices.push(c); }
+        }
+        
+        const phtCounts = [];
+        const phtRow = matrixActuals[1];
+        colIndices.forEach(col => {
+            let phtVal = 0;
+            for (let offset = 0; offset < 4; offset++) {
+                let candidate = parseInt(phtRow[col + offset], 10);
+                if (!isNaN(candidate)) { phtVal = candidate; break; }
+            }
+            phtCounts.push(phtVal);
+        });
+
+        function getThanksgivingDate(year) {
+            const novFirst = new Date(year, 10, 1);
+            const dayOfWeek = novFirst.getDay();
+            return new Date(year, 10, 1 + (4 - dayOfWeek + 7) % 7 + 21);
+        }
+        const peakTargetDate = getThanksgivingDate(new Date().getFullYear());
+        let nodeData = {};
+
+        rawNodes.forEach((node, index) => {
+            const colStart = colIndices[index];
+            let hires = [], terms = [], histDates = [], totalHires = 0, totalTerms = 0;
+            for (let r = 2; r < matrixHires.length; r++) {
+                const row = matrixHires[r];
+                if (row && row.length > colStart && row[colStart]) {
+                    const h = parseInt(row[colStart + 1], 10) || 0;
+                    const t = parseInt(row[colStart + 2], 10) || 0;
+                    hires.push(h); terms.push(t); histDates.push(row[colStart]); totalHires += h; totalTerms += t;
+                }
+            }
+            
+            let currentActual = 0, peakNeed = 0, needTrend = [], actualTrend = [], actualDates = [], stationBaselineDate = null;
+            
+            // ** THE DEFINITIVE FIX: UNIVERSAL BASELINE LOGIC **
+            // This loop now correctly finds the most recent, non-zero actual headcount date for EACH node, including "NRXX Overall".
+            for (let r = matrixActuals.length - 1; r >= 3; r--) {
+                const row = matrixActuals[r];
+                if (row && row.length > colStart && row[colStart] && (parseInt(row[colStart + 2], 10) > 0)) {
+                    stationBaselineDate = row[colStart];
+                    break;
+                }
+            }
+            
+            for (let r = 3; r < matrixActuals.length; r++) {
+                const row = matrixActuals[r];
+                if (row && row.length > colStart && row[colStart]) {
+                    const date = row[colStart];
+                    const need = parseInt(row[colStart + 1], 10) || 0;
+                    const actual = parseInt(row[colStart + 2], 10) || 0;
+                    actualDates.push(date); needTrend.push(need); actualTrend.push(actual > 0 ? actual : null);
+                    if (date === stationBaselineDate) currentActual = actual;
+                    if (date.includes('-11-') || date.includes('-12-')) { if (need > peakNeed) peakNeed = need; }
+                }
+            }
+            if (peakNeed === 0 && needTrend.length > 0) peakNeed = Math.max(...needTrend.filter(Boolean));
+
+            const weeksToPeak = stationBaselineDate ? Math.max(1, (peakTargetDate - new Date(stationBaselineDate)) / (1000 * 60 * 60 * 24 * 7)) : 1;
+            const avgTerms = terms.slice(-8).reduce((a, b) => a + b, 0) / (terms.slice(-8).length || 1);
+            const netNeeded = Math.max(0, peakNeed - currentActual);
+            const weeklyTarget = (netNeeded / weeksToPeak) + avgTerms;
+
+            nodeData[node] = {
+                name: node, currentActual, peakNeed, netNeeded, netHiresYTD: totalHires - totalTerms, totalHires, totalTerms,
+                avgTerms: avgTerms.toFixed(1), weeklyTarget: Math.ceil(weeklyTarget), weeklyTargetExact: weeklyTarget.toFixed(1),
+                phtActual: phtCounts[index] || 0, phtNeeded: Math.ceil((weeklyTarget * 3) / 8),
+                pctStaffed: peakNeed > 0 ? ((currentActual / peakNeed) * 100).toFixed(1) : '100.0',
+                trends: { dates: histDates, hires, terms, actDates: actualDates, needTrend, actualTrend }
+            };
+        });
+
+        // --- All rendering logic below is from your working file and is correct ---
+        function updateCountdown() {
+            let now = new Date(), target = getThanksgivingDate(now.getFullYear());
+            if (now > target) target = getThanksgivingDate(now.getFullYear() + 1);
+            let days = Math.floor((target - now) / (1000 * 60 * 60 * 24)), weeks = Math.floor(days / 7), remainderDays = days % 7;
+            document.getElementById('countdown-banner').innerText = `${weeks} Weeks, ${remainderDays} Days until Thanksgiving Target (${target.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
+        }
+        updateCountdown();
+        const navLinks = document.getElementById('nav-links');
+        rawNodes.forEach((n, i) => {
+            if (i === 0) return;
+            let cleanId = n.split('/')[0].toLowerCase();
+            navLinks.innerHTML += `<a href="#node-${cleanId}" class="text-purple hover:text-orange transition ml-4">${n.split('/')[0]}</a>`;
+        });
+        const ov = nodeData[rawNodes[0]], individualNodes = Object.values(nodeData).slice(1);
+        const sortedByNetNeed = [...individualNodes].sort((a, b) => b.netNeeded - a.netNeeded);
+        const topPrioritiesHtml = sortedByNetNeed.slice(0, 3).map(n => `<li class="mb-2"><strong>${n.name}:</strong> Need ${n.netNeeded} (Net YTD: ${n.netHiresYTD >= 0 ? '+' : ''}${n.netHiresYTD})</li>`).join('');
+        const sortedByPct = [...individualNodes].sort((a, b) => parseFloat(a.pctStaffed) - parseFloat(b.pctStaffed));
+        const bottomPctHtml = sortedByPct.slice(0, 2).map(n => `<li class="mb-2"><strong>${n.name}:</strong> ${n.pctStaffed}% Staffed (Need: ${n.netNeeded})</li>`).join('');
+        const commitmentsHtml = sortedByNetNeed.map(n => `<div class="flex justify-between text-sm py-1 border-b"><span>${n.name}</span><span class="font-bold text-orange">${n.netNeeded}</span></div>`).join('');
+        const summaryHtml = `<div class="card border-t-4 border-orange"><h3 class="font-bold text-lg mb-3">Top Priorities</h3><p class="text-xs text-gray-500 mb-3">Nodes requiring highest volume of new hires to hit peak need.</p><ul class="text-sm list-disc pl-5">${topPrioritiesHtml}</ul></div><div class="card border-t-4 border-orange"><h3 class="font-bold text-lg mb-3">Support Needs</h3><p class="text-xs text-gray-500 mb-3">Nodes furthest behind staffing capacity percentage.</p><ul class="text-sm list-disc pl-5">${bottomPctHtml}</ul></div><div class="card h-72 overflow-y-auto"><h3 class="font-bold text-lg mb-2 sticky top-0 bg-white">Key Commitments (Net Needed)</h3><div class="flex justify-between text-sm py-1 border-b bg-gray-100 font-bold"><span>DISTRICT OVERALL</span><span class="text-purple">${ov.netNeeded}</span></div>${commitmentsHtml}</div><div class="card h-72 overflow-y-auto border-t-4 border-purple"><h3 class="font-bold text-lg mb-2 sticky top-0 bg-white">Overall Roster vs Actual</h3><div class="text-sm space-y-2"><p><strong>Overall Peak Need:</strong> ${ov.peakNeed}</p><p><strong>Overall Actual:</strong> ${ov.currentActual} (${ov.pctStaffed}%)</p><p><strong>YTD Total Hires:</strong> ${ov.totalHires}</p><p><strong>YTD Total Terms:</strong> ${ov.totalTerms}</p><p><strong>Net District Hires:</strong> <span class="${ov.netHiresYTD < 0 ? 'text-red-500' : 'text-green-600'} font-bold">${ov.netHiresYTD >= 0 ? '+' : ''}${ov.netHiresYTD}</span></p><hr><p class="text-xs font-bold mt-2">Individual Net Hires (YTD):</p>${individualNodes.map(n => `<div class="flex justify-between text-xs py-0.5"><span>${n.name}</span><span class="${n.netHiresYTD < 0 ? 'text-red-500' : 'text-green-700'} font-semibold">${n.netHiresYTD >= 0 ? '+' : ''}${n.netHiresYTD}</span></div>`).join('')}</div></div>`;
+        document.getElementById('summary-cards').innerHTML = summaryHtml;
+        const nodeLabels = individualNodes.map(n => n.name.split('/')[0]);
+        new Chart(document.getElementById('chart-net-needed'), {type: 'bar', data: {labels: nodeLabels, datasets: [{label: 'Net New Hires Needed', data: individualNodes.map(n=>n.netNeeded), backgroundColor: '#4D148C', borderRadius: 4}]}, options: {responsive: true, plugins: { legend: { display: false } }, scales: {y: { beginAtZero: true }}}});
+        new Chart(document.getElementById('chart-pct-staffed'), {type: 'bar', data: {labels: nodeLabels, datasets: [{label: '% Staffed to Peak Need', data: individualNodes.map(n=>parseFloat(n.pctStaffed)), backgroundColor: individualNodes.map(v=>parseFloat(v.pctStaffed)<70?'#FF6600':'#4D148C'), borderRadius: 4}]}, options: {responsive: true, plugins: { legend: { display: false } }, scales: {y: { min: 40, max: 130 }}}});
+        const nodesContainer = document.getElementById('nodes-container');
+        individualNodes.forEach((node) => {
+            let cleanId = node.name.split('/')[0].toLowerCase();
+            let phtStatusClass = node.phtActual >= node.phtNeeded ? "text-green-600" : "text-orange font-bold";
+            let html = `<div id="node-${cleanId}" class="card border-l-8 border-purple scroll-mt-20"><h3 class="text-2xl font-bold mb-4 text-purple">${node.name}</h3><div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6"><div class="bg-gray-100 p-3 rounded text-center"><p class="text-xs text-gray-500 uppercase tracking-wide">Current Actual</p><p class="text-xl font-bold">${node.currentActual}</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-xs text-gray-500 uppercase tracking-wide">Peak Need</p><p class="text-xl font-bold">${node.peakNeed}</p></div><div class="bg-orange p-3 rounded text-center text-white shadow-md transform hover:scale-105 transition flex flex-col justify-center"><p class="text-[11px] uppercase tracking-wide leading-tight">Net Needed</p><p class="text-2xl font-bold">${node.netNeeded}</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-[11px] text-gray-500 uppercase tracking-wide leading-tight">Gross Wkly Target</p><p class="text-xl font-bold">${node.weeklyTargetExact}</p><p class="text-[10px] text-gray-400 mt-1">+${node.avgTerms} avg terms/wk</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-[11px] text-gray-500 uppercase tracking-wide leading-tight">Net Hires YTD</p><p class="text-xl font-bold ${node.netHiresYTD < 0 ? 'text-red-500' : 'text-green-700'}">${node.netHiresYTD >= 0 ? '+' : ''}${node.netHiresYTD}</p></div><div class="bg-gray-100 p-3 rounded text-center"><p class="text-[11px] text-gray-500 uppercase tracking-wide leading-tight">PHT (Need vs Act)</p><p class="text-lg font-bold"><span class="text-purple">${node.phtNeeded}</span> / <span class="${phtStatusClass}">${node.phtActual}</span></p></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div><h4 class="text-sm font-bold text-center mb-2">Hires vs Terms Trend</h4><canvas id="ht-chart-${cleanId}"></canvas></div><div><h4 class="text-sm font-bold text-center mb-2">Actual vs Need Trend</h4><canvas id="an-chart-${cleanId}"></canvas></div></div></div>`;
+            nodesContainer.insertAdjacentHTML('beforeend', html);
+            setTimeout(() => {
+                new Chart(document.getElementById(`ht-chart-${cleanId}`).getContext('2d'), {type: 'line', data: {labels: node.trends.dates, datasets: [{ label: 'Hires', data: node.trends.hires, borderColor: '#4D148C', backgroundColor: 'rgba(77, 20, 140, 0.1)', fill: true, tension: 0.3 }, { label: 'Terms', data: node.trends.terms, borderColor: '#FF6600', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.3 }]}, options: { responsive: true, plugins: { legend: { position: 'top' } } }});
+                new Chart(document.getElementById(`an-chart-${cleanId}`).getContext('2d'), {type: 'line', data: {labels: node.trends.actDates, datasets: [{ label: 'Projected Need', data: node.trends.needTrend, borderColor: '#374151', borderDash: [2, 2], tension: 0.1 }, { label: 'Actual Headcount', data: node.trends.actualTrend, borderColor: '#008000', backgroundColor: 'rgba(0, 128, 0, 0.1)', fill: true, tension: 0.3, spanGaps: true }]}, options: { responsive: true, plugins: { legend: { position: 'top' } } }});
+            }, 50);
+        });
+        
+    } catch (e) {
+        console.error("Dashboard Error:", e);
+        document.body.innerHTML = `<div style="font-family: sans-serif; padding: 2rem; background-color: #ffebee; border: 1px solid #c62828; color: #b71c1c;"><strong>Fatal Error:</strong> ${e.message}</div>`;
+    }
+});
+</script>
+</body>
+</html>
