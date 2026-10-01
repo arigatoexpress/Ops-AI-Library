@@ -17,7 +17,6 @@ function fail(msg) {
 }
 function warn(msg) {
   console.warn("WARN:", msg);
-  warns++;
 }
 function ok(msg) {
   console.log("OK:", msg);
@@ -53,21 +52,21 @@ for (const f of required) {
 ok(`required files present (${required.length})`);
 
 const data = JSON.parse(fs.readFileSync(path.join(root, "prompts/prompts.json"), "utf8"));
-if (!data.prompts || data.prompts.length < 40) fail(`prompts.json too small: ${data.prompts?.length}`);
+if (!data.prompts || data.prompts.length !== 49) fail(`prompts.json count must be exactly 49, got ${data.prompts?.length}`);
 else ok(`prompts.json count=${data.prompts.length}`);
 
 const ids = new Set(data.prompts.map((p) => p.id));
 for (const id of ["P00", "P01", "P08", "P20", "P44", "P45", "P46", "P47", "P48"]) {
   if (!ids.has(id)) fail(`missing prompt id ${id}`);
 }
+ok(`required prompt ids present`);
 
 const catalog = fs.readFileSync(path.join(root, "prompts/CATALOG.md"), "utf8");
 const catIds = [...catalog.matchAll(/\| (P\d+) \|/g)].map((m) => m[1]);
 for (const id of catIds) {
   if (!ids.has(id) && id !== "P00") {
-    // P00 may be template-only in json as Manager template
+    warn(`catalog id not in prompts.json: ${id}`);
   }
-  if (!ids.has(id)) warn(`catalog id not in prompts.json: ${id}`);
 }
 ok(`catalog rows=${catIds.length}`);
 
