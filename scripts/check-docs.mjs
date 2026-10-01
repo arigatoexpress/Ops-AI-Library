@@ -44,6 +44,7 @@ const required = [
   "playbooks/power-automate-flow-specs.md",
   "playbooks/gcp-sandbox.md",
   "demos/01-shift-brief.md",
+  "starter-kits/wrong-day-lates/README.md",
 ];
 
 for (const f of required) {
@@ -56,7 +57,7 @@ if (!data.prompts || data.prompts.length < 40) fail(`prompts.json too small: ${d
 else ok(`prompts.json count=${data.prompts.length}`);
 
 const ids = new Set(data.prompts.map((p) => p.id));
-for (const id of ["P00", "P01", "P08", "P20", "P44"]) {
+for (const id of ["P00", "P01", "P08", "P20", "P44", "P45", "P46", "P47", "P48"]) {
   if (!ids.has(id)) fail(`missing prompt id ${id}`);
 }
 
