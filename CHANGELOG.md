@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-01 - v2.2 Late-arrival & service-recovery baseline
+
+- Added P45–P48 (wrong-day late framing, right-day late framing, service recovery plan draft, late-arrival after-action) in prompts/late-arrival-and-service-recovery.md — modular, synthetic-only, evidence-first
+- Added docs/wrong-day-lates-baseline.md: design principles, copy-ready Gemini Enterprise configuration block, mapping to existing prompts (P32, P01, P04), SharePoint integration notes, and suggested next steps for the AI Efficiency Group
+- Updated prompts/CATALOG.md to 49 prompts; first-week set now includes P45/P46
+- Added docs/weekly-meeting-2026-10-01.md as today's meeting brief
+- Preserved all existing prompts, Travis Long concept attributions, governance docs, and SharePoint templates untouched
+- No proprietary FedEx data used; no deploys; public repo only holds templates and synthetic standards
+
 ## 2026-09-03 - v2.1 Smith Agent and one-shot demo release
 
 - Integrated and attributed Travis Long's Smith Agent baseline: ARR qualification, GPS proof, OODA adaptation, and the Analyst/Planner/Operator/Auditor loop
