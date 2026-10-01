@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-01 - v1.1 Starter-kit index sync (post-merge fixes)
+
+- Fixed `scripts/build-prompt-index.mjs` to index `prompts/late-arrival-and-service-recovery.md` so P45–P48 rebuild into `prompts.json` and the Prompt Explorer (the v2.2 catalog rows were previously invisible to the rebuild script)
+- Patched `scripts/check-docs.mjs` to require `starter-kits/wrong-day-lates/README.md` and to verify P45–P48 presence in `prompts.json`
+- Bumped starter-kit README to v1.1
+- CI on the merged PRs (#6 starter kit, #7 master plan) was green; these fixes close the rebuild gap the CI did not catch because `check-docs.mjs` did not yet require the starter-kit path
+
 ## 2026-10-01 - v2.2 Late-arrival & service-recovery baseline
 
 - Added P45–P48 (wrong-day late framing, right-day late framing, service recovery plan draft, late-arrival after-action) in prompts/late-arrival-and-service-recovery.md — modular, synthetic-only, evidence-first
