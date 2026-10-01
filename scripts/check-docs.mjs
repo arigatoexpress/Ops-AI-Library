@@ -53,21 +53,21 @@ for (const f of required) {
 ok(`required files present (${required.length})`);
 
 const data = JSON.parse(fs.readFileSync(path.join(root, "prompts/prompts.json"), "utf8"));
-if (!data.prompts || data.prompts.length < 40) fail(`prompts.json too small: ${data.prompts?.length}`);
+if (!data.prompts || data.prompts.length !== 49) fail(`prompts.json count must be exactly 49, got ${data.prompts?.length}`);
 else ok(`prompts.json count=${data.prompts.length}`);
 
 const ids = new Set(data.prompts.map((p) => p.id));
 for (const id of ["P00", "P01", "P08", "P20", "P44", "P45", "P46", "P47", "P48"]) {
   if (!ids.has(id)) fail(`missing prompt id ${id}`);
 }
+ok(`required prompt ids present`);
 
 const catalog = fs.readFileSync(path.join(root, "prompts/CATALOG.md"), "utf8");
 const catIds = [...catalog.matchAll(/\| (P\d+) \|/g)].map((m) => m[1]);
 for (const id of catIds) {
   if (!ids.has(id) && id !== "P00") {
-    // P00 may be template-only in json as Manager template
+    warn(`catalog id not in prompts.json: ${id}`);
   }
-  if (!ids.has(id)) warn(`catalog id not in prompts.json: ${id}`);
 }
 ok(`catalog rows=${catIds.length}`);
 
@@ -92,6 +92,22 @@ ok("README relative links resolve");
 
 if (!readme.includes("explorer.html")) warn("README should feature explorer.html");
 if (!readme.includes("AI drafts")) warn("README missing core rule phrase");
+
+// Secret-filename scan: flag secrets.toml, .pem, .key, .env, credential files anywhere in the tree
+const secretRe = /(^|\/)(secrets\.toml|\.env|.*\.pem|.*\.key|credentials?\.(json|yml|yaml|txt)|id_rsa.*)$/i;
+function walk(dir) {
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const rel = path.join(dir, ent.name).replace(/\\/g, "/");
+    if (ent.isDirectory()) {
+      if (ent.name === ".git" || ent.name === "node_modules") continue;
+      walk(rel);
+    } else if (secretRe.test(rel)) {
+      fail(`secret-like filename in repo: ${rel}`);
+    }
+  }
+}
+walk(root);
+ok("no secret-like filenames in tree");
 
 console.log("");
 if (errors) {
