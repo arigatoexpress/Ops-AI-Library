@@ -6,7 +6,7 @@ This repository brings together copy-ready Gemini workflows, reusable agent inst
 
 > **Prototype portfolio - not an official FedEx product or policy.** Use only approved enterprise tools and approved data. AI drafts and recommendations require human review. Never commit or paste customer, package, employee, route, security, credential, or facility-sensitive data into public or unapproved systems.
 
-[Launch today's one-shot demo](demos/google-ai-studio-master-prompt.md) · [Open the offline hub](index.html) · [Browse 45 prompts](prompts/explorer.html) · [Review the concept portfolio](concepts/README.md)
+[Launch today's one-shot demo](demos/google-ai-studio-master-prompt.md) · [Open the offline hub](index.html) · [Browse 49 prompts](prompts/explorer.html) · [Review the concept portfolio](concepts/README.md) · [Today's meeting brief](docs/weekly-meeting-2026-10-01.md) · [Wrong-day lates baseline](docs/wrong-day-lates-baseline.md)
 
 ---
 
@@ -16,6 +16,7 @@ This repository brings together copy-ready Gemini workflows, reusable agent inst
 | --- | --- | --- | --- |
 | Adopt | [Prompt Explorer](prompts/explorer.html) | Ready for approved use | Find, fill, and copy a guarded prompt in minutes |
 | Adopt | [Gemini agent souls](souls/README.md) | Ready to configure | Reusable behavior for briefs, meetings, metrics, process improvement, and governance |
+| Adopt | [Late-arrival prompts P45–P48](prompts/late-arrival-and-service-recovery.md) | **New — v2.2** | Wrong-day and right-day late framing, service recovery drafts, after-action — modular and synthetic-only |
 | Enable | [SharePoint / Teams page](sharepoint/ops-ai-library-page-template.html) | Template ready | Gives a team a simple front door without GitHub fluency |
 | Govern | [Safe-use rules](governance/safe-use-rules.md) and [review checklist](governance/project-review-checklist.md) | Active guardrails | Keeps data handling and human accountability explicit |
 | Incubate | [Operational AI concepts](concepts/README.md) | Concept / validation | Converts team ideas into testable, reviewable proposals |
@@ -26,7 +27,7 @@ This repository brings together copy-ready Gemini workflows, reusable agent inst
 ## Start in 60 seconds
 
 1. Open [Prompt Explorer](prompts/explorer.html).
-2. Choose a first-week prompt such as **P01 Daily Manager Brief** or **P20 Metrics Summary**.
+2. Choose a first-week prompt such as **P01 Daily Manager Brief**, **P45 Wrong-Day Late Framing**, or **P20 Metrics Summary**.
 3. Replace placeholders with approved, scrubbed facts or safe aggregates.
 4. Paste into Gemini Enterprise, review every claim against the source, and edit before sharing or acting.
 
@@ -67,6 +68,7 @@ See the [integrated architecture](concepts/integrated-operations-architecture.md
 | Need | Go to |
 | --- | --- |
 | Use a prompt | [Prompt catalog](prompts/CATALOG.md) · [Prompt Explorer](prompts/explorer.html) |
+| Wrong-day / right-day lates | [Baseline framework](docs/wrong-day-lates-baseline.md) · [P45–P48](prompts/late-arrival-and-service-recovery.md) · [Today's meeting brief](docs/weekly-meeting-2026-10-01.md) |
 | Build a Gemini agent | [Agent souls](souls/README.md) · [setup checklist](gemini-agents/agent-setup-checklist.md) |
 | Launch with managers | [Getting started](docs/getting-started-for-managers.md) · [FAQ](docs/faq.md) · [workshop](docs/workshop-15-min.md) |
 | Put it in Teams / SharePoint | [Page template](sharepoint/ops-ai-library-page-template.html) · [native recipe](sharepoint/sharepoint-native-page-recipe.md) |
@@ -74,7 +76,7 @@ See the [integrated architecture](concepts/integrated-operations-architecture.md
 | Review a new idea | [Concept portfolio](concepts/README.md) · [project review checklist](governance/project-review-checklist.md) |
 | Plan the cloud path | [GCP sandbox](playbooks/gcp-sandbox.md) · [Gemini Enterprise day one](playbooks/gemini-enterprise-day-one.md) |
 | Build the synthetic control-tower demo | [One-shot master prompt](demos/google-ai-studio-master-prompt.md) · [synthetic-data standard](demos/synthetic-data-standard.md) |
-| Run this week's meeting | [September 3 meeting brief](docs/weekly-meeting-2026-09-03.md) |
+| Run this week's meeting | [October 1 meeting brief](docs/weekly-meeting-2026-10-01.md) |
 | Audit source coverage | [SharePoint contribution register](docs/sharepoint-contribution-register-2026-09-03.md) |
 
 ## Portfolio boundaries
@@ -114,4 +116,5 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). New co
 - **Ops AI Library and integrated enablement program:** AI Efficiency Group contributors
 - **Zero-Click Compliance Agent, Virtual Ride-Along Agent, EAVA, ACT, and Smith Agent concepts:** Travis Long
 - **Repository integration and demo synthesis:** Ari Spector and AI Efficiency Group contributors
+- **Late-arrival baseline (P45–P48) and v2.2 meeting artifacts:** Ari Spector
 - **Human review and final operational accountability:** the authorized business owner for each use case
