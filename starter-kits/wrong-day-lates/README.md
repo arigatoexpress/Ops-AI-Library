@@ -1,4 +1,4 @@
-# Wrong-Day & Right-Day Lates — Starter Kit v1
+# Wrong-Day & Right-Day Lates — Starter Kit v1.1
 
 **Purpose:** A complete, drop-in packet for the sanctioned AI Efficiency Group project. Paste this into Gemini Enterprise (with Outlook/Teams connected) and you are on the case — no rebuilding, no proprietary data, no company-specific configuration required.
 
