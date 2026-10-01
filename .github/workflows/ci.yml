@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: List repository files
+        run: |
+          git rev-parse HEAD
+          git ls-files | wc -l
+          git ls-files | head -50
+
+      - name: Validate JSON files parse
+        run: |
+          python3 - <<'PY'
+          import json, subprocess, sys
+          files = subprocess.check_output(["git", "ls-files", "*.json"], text=True).split()
+          bad = 0
+          for f in files:
+              try:
+                  with open(f, encoding="utf-8") as fh:
+                      json.load(fh)
+              except Exception as e:
+                  print(f"ERROR: {f}: {e}")
+                  bad += 1
+          print(f"checked {len(files)} JSON file(s), {bad} invalid")
+          sys.exit(1 if bad else 0)
+          PY
+
+      - name: Docs integrity check (required files, prompt index, README links)
+        run: node scripts/check-docs.mjs
+
+      - name: Zero-click prototype unit tests (synthetic, offline)
+        working-directory: concepts/zero-click-compliance/prototype
+        run: python3 -m unittest discover -s tests -v
