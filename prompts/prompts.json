@@ -1,7 +1,7 @@
 {
-  "generated": "2026-08-27",
-  "version": "1.3",
-  "count": 45,
+  "generated": "2026-10-01",
+  "version": "1.4",
+  "count": 49,
   "rule": "AI drafts. You decide. Never paste tracking numbers, customer names, employee records, routes, or credentials into unapproved tools.",
   "prompts": [
     {
@@ -682,6 +682,63 @@
       "agent": "Governance Gatekeeper",
       "firstWeek": true,
       "tip": "Use before any new AI idea or automation request."
+    },
+    {
+      "id": "P45",
+      "title": "Wrong-Day Late Framing",
+      "category": "Late arrival & service recovery",
+      "file": "late-arrival-and-service-recovery.md",
+      "minutes": 5,
+      "text": "Act as a FedEx operations supervisor framing a wrong-day late for internal coordination.\n\nContext (scrubbed — no real tracking numbers, customer names, addresses, or facility identifiers):\n[Paste non-sensitive notes: what was expected, what actually happened, general impact.]\n\nReturn:\n- Situation in 2 sentences (confirmed facts only)\n- Operational impact (sort / P&D / customer risk — general terms)\n- Actions already taken\n- Decisions needed (roles, not personal names)\n- Information still missing\n- Suggested next check-in time\n\nRules:\n- Do not invent facts, causes, or root causes.\n- Put unclear items under \"Needs verification.\"\n- Neutral tone. No blame.\n- Label the whole output as a draft for manager review.",
+      "placeholders": [
+        "[Paste non-sensitive notes: what was expected, what actually happened, general impact.]"
+      ],
+      "agent": "Shift Brief Coach",
+      "firstWeek": true,
+      "tip": "Use for wrong-day lates. Scrub notes first; treat output as a draft."
+    },
+    {
+      "id": "P46",
+      "title": "Right-Day Late Framing",
+      "category": "Late arrival & service recovery",
+      "file": "late-arrival-and-service-recovery.md",
+      "minutes": 5,
+      "text": "Act as a FedEx operations supervisor framing a right-day late (on-time-but-late-in-window) for internal coordination.\n\nContext (scrubbed):\n[Paste non-sensitive notes: commitment window, actual arrival, general impact.]\n\nReturn:\n- Situation in 2 sentences\n- Whether the commitment was met or missed (confirmed only)\n- Operational impact (general)\n- Actions already taken\n- Decisions needed (roles)\n- Information still missing\n\nRules:\n- Do not infer root cause from the variance.\n- Do not invent facts.\n- Label the whole output as a draft for manager review.",
+      "placeholders": [
+        "[Paste non-sensitive notes: commitment window, actual arrival, general impact.]"
+      ],
+      "agent": "Shift Brief Coach",
+      "firstWeek": true,
+      "tip": "Use for right-day lates. Do not infer root cause from the variance."
+    },
+    {
+      "id": "P47",
+      "title": "Service Recovery Plan Draft",
+      "category": "Late arrival & service recovery",
+      "file": "late-arrival-and-service-recovery.md",
+      "minutes": 8,
+      "text": "Draft a service-recovery plan for a late or missed commitment.\n\nEvent (scrubbed, general terms):\n[Describe the event without sensitive identifiers.]\n\nReturn:\n- Customer impact (general — no names or tracking numbers)\n- Recovery options (2-3, advisory only)\n- Communication needed (who to notify, in role terms)\n- Owner and next step for each option\n- What must be verified before acting\n\nRules:\n- Advisory only. No dispatch authority, no customer contact.\n- Do not promise outcomes that are not confirmed.\n- Label the whole output as a draft for manager review.",
+      "placeholders": [
+        "[Describe the event without sensitive identifiers.]"
+      ],
+      "agent": "Shift Brief Coach",
+      "firstWeek": false,
+      "tip": "Advisory only. No dispatch authority."
+    },
+    {
+      "id": "P48",
+      "title": "Late-Arrival After-Action",
+      "category": "Late arrival & service recovery",
+      "file": "late-arrival-and-service-recovery.md",
+      "minutes": 8,
+      "text": "Create an after-action review for a late-arrival event.\n\nEvent:\n[Describe in general terms.]\n\nNotes (scrubbed):\n[Paste notes.]\n\nReturn:\n- What happened (confirmed facts only)\n- What went well\n- What slowed us down\n- Root causes to investigate (labeled as hypotheses)\n- Corrective actions with owners (roles)\n- Follow-up date\n\nSeparate confirmed facts from theories. No real employee names or incident IDs.",
+      "placeholders": [
+        "[Describe in general terms.]",
+        "[Paste notes.]"
+      ],
+      "agent": "Shift Brief Coach",
+      "firstWeek": false,
+      "tip": "Separate confirmed facts from hypotheses."
     }
   ]
 }

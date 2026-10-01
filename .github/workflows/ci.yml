@@ -6,7 +6,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   checks:
@@ -16,7 +16,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
-          persist-credentials: false
+          ref: ${{ github.head_ref || github.ref_name }}
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List repository files
         run: |
@@ -40,6 +42,21 @@ jobs:
           print(f"checked {len(files)} JSON file(s), {bad} invalid")
           sys.exit(1 if bad else 0)
           PY
+
+      - name: Rebuild prompt index (prompts.json + explorer DATA)
+        run: node scripts/build-prompt-index.mjs
+
+      - name: Commit rebuilt index if it drifted
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prompts/prompts.json prompts/explorer.html
+          if git diff --cached --quiet; then
+            echo "Index already matches builder"
+          else
+            git commit -m "chore: rebuild prompt index from source prompts"
+            git push
+          fi
 
       - name: Docs integrity check (required files, prompt index, README links)
         run: node scripts/check-docs.mjs
