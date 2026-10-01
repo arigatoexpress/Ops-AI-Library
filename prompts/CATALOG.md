@@ -49,9 +49,17 @@ One table. Find a job → open the file → copy the prompt.
 | P42 | Accuracy Review | [governance-safe-use.md](governance-safe-use.md) | 8 |
 | P43 | External Sharing Check | [governance-safe-use.md](governance-safe-use.md) | 5 |
 | P44 | Is This Safe To Try? | [governance-safe-use.md](governance-safe-use.md) | 5 |
+| P45 | Wrong-Day Late Framing | [late-arrival-and-service-recovery.md](late-arrival-and-service-recovery.md) | 5 |
+| P46 | Right-Day Late Framing | [late-arrival-and-service-recovery.md](late-arrival-and-service-recovery.md) | 5 |
+| P47 | Service Recovery Plan Draft | [late-arrival-and-service-recovery.md](late-arrival-and-service-recovery.md) | 8 |
+| P48 | Late-Arrival After-Action | [late-arrival-and-service-recovery.md](late-arrival-and-service-recovery.md) | 8 |
 
-**Count:** 45 prompts + writing guide (P00).
+**Count:** 49 prompts + writing guide (P00).
 
 ## Suggested “first week” set for new managers
 
-P01 · P02 · P08 · P15 · P20 · P44
+P01 · P02 · P08 · P15 · P20 · P44 · P45 · P46
+
+## Late-arrival cycle (new)
+
+P45 or P46 → P47 → P48. See [docs/wrong-day-lates-baseline.md](../docs/wrong-day-lates-baseline.md) for the full framework and Gemini Enterprise config.
