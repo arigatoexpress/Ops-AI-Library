@@ -93,6 +93,25 @@ ok("README relative links resolve");
 if (!readme.includes("explorer.html")) warn("README should feature explorer.html");
 if (!readme.includes("AI drafts")) warn("README missing core rule phrase");
 
+// Secret-filename scan: flag secrets.toml, .pem, .key, .env, credential files anywhere in the tree.
+// Success line prints only when this walk finds nothing; failure still records an error and exits non-zero.
+const secretRe = /(^|\/)(secrets\.toml|\.env|.*\.pem|.*\.key|credentials?\.(json|yml|yaml|txt)|id_rsa.*)$/i;
+let secretLikeCount = 0;
+function walk(dir) {
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const rel = path.join(dir, ent.name).replace(/\\/g, "/");
+    if (ent.isDirectory()) {
+      if (ent.name === ".git" || ent.name === "node_modules") continue;
+      walk(rel);
+    } else if (secretRe.test(rel)) {
+      secretLikeCount++;
+      fail(`secret-like filename in repo: ${rel}`);
+    }
+  }
+}
+walk(root);
+if (secretLikeCount === 0) ok("no secret-like filenames in tree");
+
 console.log("");
 if (errors) {
   console.error(`FAILED with ${errors} error(s), ${warns} warning(s)`);
