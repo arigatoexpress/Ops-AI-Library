@@ -53,3 +53,5 @@ P01 · P02 · P08 · P15 · P20 · P44
 node scripts/build-prompt-index.mjs
 node scripts/check-docs.mjs
 ```
+
+Commit `prompts/prompts.json` and `explorer.html` with the prompt edit. CI runs the same builder and fails if those files drift.

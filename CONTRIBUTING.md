@@ -39,6 +39,7 @@ Thank you for helping Operations Managers use AI safely.
 - [ ] Needs verification / human review language  
 - [ ] Listed in `prompts/CATALOG.md` with ID  
 - [ ] Linked from `prompts/README.md` if new category  
+- [ ] Rebuilt index committed (`node scripts/build-prompt-index.mjs` → `prompts/prompts.json` and `prompts/explorer.html`). CI fails if those files drift.  
 
 ## Soul checklist
 

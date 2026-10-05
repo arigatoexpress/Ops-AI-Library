@@ -107,6 +107,8 @@ node scripts/check-docs.mjs
 python3 -m unittest discover -s concepts/zero-click-compliance/prototype/tests -v
 ```
 
+Commit the rebuilt `prompts/prompts.json` and `prompts/explorer.html` with your prompt edits. CI runs the same builder and fails if those files drift.
+
 ## Contributing
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md). New concepts must use the intake and validation gates in [concepts/README.md](concepts/README.md). Report sensitive material privately as described in [SECURITY.md](SECURITY.md).

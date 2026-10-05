@@ -4,6 +4,7 @@
  * Usage: node scripts/check-docs.mjs
  */
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -93,24 +94,82 @@ ok("README relative links resolve");
 if (!readme.includes("explorer.html")) warn("README should feature explorer.html");
 if (!readme.includes("AI drafts")) warn("README missing core rule phrase");
 
-// Secret-filename scan: flag secrets.toml, .pem, .key, .env, credential files anywhere in the tree.
+// Secret-filename scan: flag secrets.toml, .pem, .key, .env, credential files.
 // Success line prints only when this walk finds nothing; failure still records an error and exits non-zero.
+//
+// Owner decision: the travis-vscode-repo/ contributor tree stays. Skip that
+// path prefix only — it previously held a 0-byte .streamlit/secrets.toml, and
+// deleting the folder is not the fix. Do not broaden this list. Every other
+// path is still scanned.
+const SECRET_SCAN_EXCLUDE_PREFIXES = ["travis-vscode-repo/"];
 const secretRe = /(^|\/)(secrets\.toml|\.env|.*\.pem|.*\.key|credentials?\.(json|yml|yaml|txt)|id_rsa.*)$/i;
-let secretLikeCount = 0;
-function walk(dir) {
-  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
-    const rel = path.join(dir, ent.name).replace(/\\/g, "/");
-    if (ent.isDirectory()) {
-      if (ent.name === ".git" || ent.name === "node_modules") continue;
-      walk(rel);
-    } else if (secretRe.test(rel)) {
-      secretLikeCount++;
-      fail(`secret-like filename in repo: ${rel}`);
+
+function toPosix(p) {
+  return p.split(path.sep).join("/");
+}
+
+function isUnderExcludedPrefix(relPosix, prefixes) {
+  return prefixes.some((prefix) => {
+    const dir = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
+    return relPosix === dir || relPosix.startsWith(`${dir}/`);
+  });
+}
+
+function scanSecretFilenames(scanRoot, excludePrefixes) {
+  const hits = [];
+  function walk(dir) {
+    for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+      const abs = path.join(dir, ent.name);
+      const rel = toPosix(path.relative(scanRoot, abs));
+      if (isUnderExcludedPrefix(rel, excludePrefixes)) continue;
+      if (ent.isDirectory()) {
+        if (ent.name === ".git" || ent.name === "node_modules") continue;
+        walk(abs);
+      } else if (secretRe.test(rel)) {
+        hits.push(rel);
+      }
     }
   }
+  walk(scanRoot);
+  return hits;
 }
-walk(root);
-if (secretLikeCount === 0) ok("no secret-like filenames in tree");
+
+// Self-test writes a temp tree outside the repo and deletes it before exit.
+// It must flag a secret-like name elsewhere, including a near-miss folder
+// name, and it must ignore the same name under travis-vscode-repo/.
+function runSecretScanSelfTest() {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "ops-ai-secret-scan-"));
+  const flagged = "elsewhere/secrets.toml";
+  const excluded = "travis-vscode-repo/.streamlit/secrets.toml";
+  const nearMiss = "travis-vscode-repo-extra/secrets.toml";
+  const before = errors;
+  try {
+    for (const rel of [flagged, excluded, nearMiss]) {
+      const abs = path.join(tmp, ...rel.split("/"));
+      fs.mkdirSync(path.dirname(abs), { recursive: true });
+      fs.writeFileSync(abs, "");
+    }
+    fs.writeFileSync(path.join(tmp, "notes.txt"), "not a secret filename");
+    const hits = new Set(scanSecretFilenames(tmp, SECRET_SCAN_EXCLUDE_PREFIXES));
+    if (!hits.has(flagged)) fail(`self-test: expected secret-like filename to be flagged: ${flagged}`);
+    if (!hits.has(nearMiss)) fail(`self-test: prefix exclusion is too broad, missed ${nearMiss}`);
+    if (hits.has(excluded) || [...hits].some((h) => h === "travis-vscode-repo" || h.startsWith("travis-vscode-repo/"))) {
+      fail(`self-test: ${excluded} should be excluded by prefix travis-vscode-repo/`);
+    }
+    if (hits.has("notes.txt")) fail("self-test: notes.txt should not be flagged");
+    if (errors === before) {
+      ok("secret-filename self-test: flags secrets.toml outside travis-vscode-repo/ and skips that prefix");
+    }
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+}
+
+runSecretScanSelfTest();
+
+const repoHits = scanSecretFilenames(root, SECRET_SCAN_EXCLUDE_PREFIXES);
+for (const hit of repoHits) fail(`secret-like filename in repo: ${hit}`);
+if (repoHits.length === 0) ok("no secret-like filenames in tree");
 
 console.log("");
 if (errors) {

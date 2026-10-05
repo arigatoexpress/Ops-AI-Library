@@ -1,5 +1,7 @@
 # Receipt — 2026-10-01 CI green rebuild
 
+> Later workflow change: CI runs `node scripts/build-prompt-index.mjs` and fails if `prompts/prompts.json` or `prompts/explorer.html` drift. Contributors run the builder locally and commit the result. The commit-and-push step described below is the 2026-10-01 behavior this receipt recorded.
+
 ## What failed
 PR #8 check run 110504121535 (workflow run 36902285643) failed Docs integrity:
 prompts.json count=45, missing P45-P48. The branch restored
