@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-06 - Exact prompt count in the docs check
+
+- `scripts/check-docs.mjs` requires exactly 49 prompts and required IDs P00, P01, P08, P20, and P44–P48. The success line for those IDs prints only when every required ID is present.
+- Owner ruling 2026-10-05 stands: `travis-vscode-repo/` stays. The secret-filename scan still skips only that prefix. Nothing under that folder is deleted.
+
 ## 2026-10-05 - CI least privilege and secret-filename scope
 
 - Secret-filename scan skips the `travis-vscode-repo/` path prefix only and still fails on secret-like filenames everywhere else. A self-test in `scripts/check-docs.mjs` proves that with a temporary tree that is not committed.
