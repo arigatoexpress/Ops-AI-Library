@@ -53,14 +53,26 @@ for (const f of required) {
 }
 ok(`required files present (${required.length})`);
 
+// Exact count catches a stale committed index. A floor such as ">= 40" let a
+// short index pass while the catalog already listed 49 prompts.
+const REQUIRED_PROMPT_IDS = ["P00", "P01", "P08", "P20", "P44", "P45", "P46", "P47", "P48"];
+
 const data = JSON.parse(fs.readFileSync(path.join(root, "prompts/prompts.json"), "utf8"));
-if (!data.prompts || data.prompts.length < 40) fail(`prompts.json too small: ${data.prompts?.length}`);
-else ok(`prompts.json count=${data.prompts.length}`);
+if (!data.prompts || data.prompts.length !== 49) {
+  fail(`prompts.json count must be exactly 49, got ${data.prompts?.length}`);
+} else {
+  ok(`prompts.json count=${data.prompts.length}`);
+}
 
 const ids = new Set(data.prompts.map((p) => p.id));
-for (const id of ["P00", "P01", "P08", "P20", "P44", "P45", "P46", "P47", "P48"]) {
-  if (!ids.has(id)) fail(`missing prompt id ${id}`);
+let missingRequiredIds = 0;
+for (const id of REQUIRED_PROMPT_IDS) {
+  if (!ids.has(id)) {
+    fail(`missing prompt id ${id}`);
+    missingRequiredIds++;
+  }
 }
+if (missingRequiredIds === 0) ok("required prompt ids present");
 
 const catalog = fs.readFileSync(path.join(root, "prompts/CATALOG.md"), "utf8");
 const catIds = [...catalog.matchAll(/\| (P\d+) \|/g)].map((m) => m[1]);
