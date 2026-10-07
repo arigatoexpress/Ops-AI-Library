@@ -14,7 +14,7 @@ Not a production app monorepo.
 
 - Write for non-technical managers first.  
 - Keep prompts scrubbed and anti-hallucination.  
-- After prompt markdown changes:
+- After prompt markdown changes, rebuild the index and commit `prompts/prompts.json` and `prompts/explorer.html`. CI runs the same builder and fails if those files drift.
   ```bash
   node scripts/build-prompt-index.mjs
   node scripts/check-docs.mjs

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-05 - CI least privilege and secret-filename scope
+
+- Secret-filename scan skips the `travis-vscode-repo/` path prefix only and still fails on secret-like filenames everywhere else. A self-test in `scripts/check-docs.mjs` proves that with a temporary tree that is not committed.
+- CI permissions are `contents: read`. The workflow runs the prompt-index builder and fails if `prompts/prompts.json` or `prompts/explorer.html` drift. Contributors run `node scripts/build-prompt-index.mjs` locally and commit the result.
+- The builder keeps the existing `generated` date when the prompt payload is unchanged, so a date-only rewrite does not look like drift.
+
 ## 2026-10-01 - v1.1 Starter-kit index sync (post-merge fixes)
 
 - Fixed `scripts/build-prompt-index.mjs` to index `prompts/late-arrival-and-service-recovery.md` so P45–P48 rebuild into `prompts.json` and the Prompt Explorer (the v2.2 catalog rows were previously invisible to the rebuild script)

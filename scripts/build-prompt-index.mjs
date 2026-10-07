@@ -177,11 +177,36 @@ for (const row of catMd.split("\n")) {
 
 prompts.sort((a, b) => Number(a.id.replace(/\D/g, "")) - Number(b.id.replace(/\D/g, "")));
 
+const rule =
+  "AI drafts. You decide. Never paste tracking numbers, customer names, employee records, routes, or credentials into unapproved tools.";
+
+// Keep the previous generated date when the prompt payload is unchanged.
+// A date-only rewrite would fail the CI drift check every new day. A real
+// prompt edit still stamps today, and that result must be committed.
+function generatedStamp(promptList) {
+  const today = new Date().toISOString().slice(0, 10);
+  const jsonPath = path.join(promptsDir, "prompts.json");
+  if (!fs.existsSync(jsonPath)) return today;
+  try {
+    const prev = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
+    const unchanged =
+      typeof prev.generated === "string" &&
+      prev.version === "1.4" &&
+      prev.rule === rule &&
+      prev.count === promptList.length &&
+      JSON.stringify(prev.prompts) === JSON.stringify(promptList);
+    if (unchanged) return prev.generated;
+  } catch {
+    // Previous index is unreadable; stamp today.
+  }
+  return today;
+}
+
 const data = {
-  generated: new Date().toISOString().slice(0, 10),
+  generated: generatedStamp(prompts),
   version: "1.4",
   count: prompts.length,
-  rule: "AI drafts. You decide. Never paste tracking numbers, customer names, employee records, routes, or credentials into unapproved tools.",
+  rule,
   prompts,
 };
 

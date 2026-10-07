@@ -78,3 +78,4 @@ Synthetic metrics generator → eval harness → narrative helper.
 ```bash
 node scripts/build-prompt-index.mjs
 ```
+Commit `prompts/prompts.json` and `prompts/explorer.html` with the prompt edit. CI runs the same builder and fails if those files drift.
