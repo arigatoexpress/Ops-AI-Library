@@ -27,7 +27,7 @@
 ### WeGoForward — code `WGF`
 
 - **What it is:** the **owner's business brand** offering AI and automation services to small and large business clients. The site lists five offers: half-day agent-safety workshop, one-workflow-one-week, sourced brief / twenty cases, x402 demo, and website answers/follow-up ([wegoforward repo pages](https://github.com/arigatoexpress/wegoforward)).
-- **Site:** [wegoforward.app](https://wegoforward.app) — **live as of 2026-10-07** (HTTP 200, Cloudflare-fronted, "no forms, no scripts, no analytics"). The repo description "wegoforward.app is not registered" is **stale** — see §5.
+- **Site:** [wegoforward.app](https://wegoforward.app) — **live as of 2026-10-07** (HTTP 200, Cloudflare-fronted; static pages with no forms and no cookies. Since 2026-10-09 Cloudflare Web Analytics adds one cookie-free beacon script at the edge, disclosed on /privacy). The repo description "wegoforward.app is not registered" is **stale** — see §5.
 - **Repo:** [arigatoexpress/wegoforward](https://github.com/arigatoexpress/wegoforward) (static pages + a workshop exercise).
 - **Google Cloud project:** a GCP project represents this business, but **its ID does not appear in any public repo doc** reviewed for this canon. Record it in the private project registry (§4) and keep it out of public docs.
 - **Always call it:** **"WeGoForward (WGF)"**.
